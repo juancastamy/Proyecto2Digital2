@@ -65,10 +65,12 @@ void setup() {
   LCD_Init();
   LCD_Clear(0x00);
   
-  FillRect(0, 0, 319, 206, 0x00);
+  //FillRect(0, 0, 194, 84, 0xff);
+  //LCD_Bitmap(0, 0, 105, 44, title_screen);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
+  /*
   String text1 = "Contra: Alien Wars";
-  LCD_Print(text1, 20, 100, 2, 0xffff, 0x00);
-//LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
+  LCD_Print(text1, 20, 100, 2, 0xffff, 0x00);*/
+  //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
     
   //LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
   
@@ -102,7 +104,7 @@ void loop() {
     
     LCD_Sprite(x,100,35,44,bill_shooting_down,3,anim2,1,0);
     V_line( x + 16, 100, 44, 0x00);
-  } 
+  }
 }
 //***************************************************************************************************************************************
 // Función para inicializar LCD
