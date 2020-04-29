@@ -64,13 +64,13 @@ void setup() {
   Serial.println("Inicio");
   LCD_Init();
   LCD_Clear(0x00);
-  
+  /*
   //FillRect(0, 0, 194, 84, 0xff);
   LCD_Bitmap(108, 40, 105, 44, title_screen);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
   LCD_Bitmap(131, 98, 59, 45, characters);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
   
   String text1 = "Press Start";
-  LCD_Print(text1, 70, 150, 2, 0xffff, 0x00);
+  LCD_Print(text1, 70, 150, 2, 0xffff, 0x00);*/
   //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
     
   //LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
@@ -92,20 +92,20 @@ void setup() {
 void loop() {/*
   for(int x = 0; x <320-35; x++){
     delay(5);
-    int anim = (x/10)%3;
+    int anim = (x/10)%7;
 
     //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
-    LCD_Sprite(x,100,35,44,bill_shooting_down,3,anim,0,0);
+    LCD_Sprite(x,100,35,44,soldier,7,anim,1,0);
     V_line( x -1, 100, 44, 0x00);  
-  }
+  }*/
 //******************************************************************************************************************************************  
   for(int x = 320-35; x >0; x--){
     delay(5);
-    int anim2 = (x/10)%3;
+    int anim2 = (x/10)%4;
     
-    LCD_Sprite(x,100,35,44,bill_shooting_down,3,anim2,1,0);
-    V_line( x + 16, 100, 44, 0x00);
-  }*/
+    LCD_Sprite(x,100,41,44,spider,4,anim2,0,0);
+    V_line( x + 41, 100, 44, 0x00); //16
+  }
 }
 //***************************************************************************************************************************************
 // Función para inicializar LCD
