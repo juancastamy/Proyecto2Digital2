@@ -19,6 +19,7 @@ TMRpcm tmrpcm;
 #define jump2 6
 #define start2 7
 int PAUSESOUND;
+int x;
 //varianles de disparo y salto primer jugado
 int s;
 int j;
@@ -33,30 +34,17 @@ int Xvalue2;
 int Yvalue2;
 int START2;
 //variable para anti rebote
+int ju;
+int ju2;
+int sh;
+int sh2;
 int STOP;
 int STOP2;
 // variable para pausa
 int PAUSE;
 int PAUSE2;
-void PAUSA();
-//funciones usadas para el primer jugador 
-void FRONT();
-void BACK();
-void UP();
-void CROUCH();
-void STANDING();
-void CRUZE();
-void NOMOVE();
 
-//funciones usadas para el segundo jugador 
-void FRONT2();
-void BACK2();
-void UP2();
-void CROUCH2();
-void STANDING2();
-void CRUZE2();
-void NOMOVE2();
-
+unsigned char MENSAJE[] = {0,0,0,0,0,0,0,0,0,0};
 void setup() {
   tmrpcm.speakerPin = 9;
   Serial.begin(9600);
@@ -67,7 +55,6 @@ void setup() {
   }
   tmrpcm.setVolume(6);
   tmrpcm.play("CONTRA.wav");
-  tmrpcm.play("CONTRA.wav");
   //definicion de puertos primer jugador
   pinMode(shot,INPUT);
   pinMode(jump,INPUT);
@@ -77,26 +64,21 @@ void setup() {
   pinMode(shot2,INPUT);
   pinMode(jump2,INPUT);
   pinMode(start2,INPUT); 
-  //se limpian las variables de ambos jugadores 
-  s=0;
-  j=0;
-  START=0;
-  s2=0;
-  j2=0;
-  START2=0;
+  // put your setup code here, to run once:
+  //variable para anti rebote
+  ju=0;
+  ju2=0;
+  sh=0;
+  sh2=0;
   STOP=0;
   STOP2=0;
+  // variable para pausa
   PAUSE=0;
   PAUSE2=0;
-  PAUSESOUND=0;
-  //MUSICA
-  }
 
-
+}
 
 void loop() {
-
-  //se leen los botones del jugador 1
   s=digitalRead(shot);
   j=digitalRead(jump);
   START=digitalRead(start);
@@ -113,45 +95,23 @@ void loop() {
   //Lectura de puerto analogico segundo jugador
   Xvalue2=analogRead(X2);
   Yvalue2=analogRead(Y2);
-  PAUSA();
-  if(PAUSE==0 && PAUSE2==0){
-    //se llaman las funciones del primer jugador
-    Serial.print("PLAYER ONE");
-    Serial.print ('\t');
-    Serial.println("PLAYER TWO");
-    FRONT();
-    BACK();
-    UP();
-    CROUCH();
-    STANDING();   
-    CRUZE();
-    NOMOVE();
+  
+  if(s==HIGH){
+    ju = 1;
+  }
+  if (s==LOW && ju==1){
+    MENSAJE[0] = 1;
+    ju=0;
+  }
 
-    
-    //se llaman las funciones del segundo jugador
-    
-    FRONT2();
-    BACK2();
-    UP2();
-    CROUCH2();
-    STANDING2();   
-    CRUZE2();
-    NOMOVE2();  
-    PAUSESOUND=0;  
+  if(j==HIGH){
+    sh=1;
   }
-  else{
-    PAUSESOUND++;
-    Serial.println("PAUSE");    
-  }
- if(PAUSESOUND==1){
-    tmrpcm.stopPlayback();
-    tmrpcm.play("Pause.wav");
-    delay(500);
-    tmrpcm.play("CONTRA.wav");
-  }
-}
-//Funcion para poner pausa
-void PAUSA(){
+  if(j==LOW && sh==1){
+    MENSAJE[1]=1;
+    sh=0;
+    }
+
   if(START==HIGH && PAUSE2==0){
     STOP=1;
   }
@@ -159,369 +119,89 @@ void PAUSA(){
     STOP2=1;
   }
   if(START==LOW && STOP==1 && PAUSE2==0){
-    PAUSE= ~PAUSE;
+    PAUSE=~PAUSE;
     STOP=0;
   }
   if(START2==LOW && STOP2==1 && PAUSE==0){
     PAUSE2=~PAUSE2;
     STOP2=0;
   }
-  if(PAUSE==1){
+  if(PAUSE==-1){
+    MENSAJE[2]=1;
     PAUSE2=0;
   }
-  if(PAUSE2==1){
+   else{
+    MENSAJE[2]=0;
+  }
+  if(PAUSE2==-1){
+    MENSAJE[3]=1;
     PAUSE=0;
   }
-  return;
-}
-//funciones del primer jugador que permiten su movimiento y acciones
-void FRONT(){
-  if(Xvalue>=700 && Yvalue>400 && Yvalue<700 && s==LOW && j==LOW){
-    Serial.print("front");
-    Serial.print ('\t');
+  else{
+    MENSAJE[3]=0;
   }
-  else if(Xvalue>=700 && Yvalue>400 && Yvalue<700 && s==LOW && j==HIGH){
-    Serial.print("front and jump");
-    Serial.print ('\t'); 
+  
+  if(Xvalue>=700){
+    MENSAJE[4]=2;
   }
-  else if(Xvalue>=700 && Yvalue>400 && Yvalue<700 && s==HIGH && j==LOW){
-    Serial.print("front and shot");
-    Serial.print ('\t');
+  if(Xvalue<=400){
+    MENSAJE[4]=1;
   }
-  else if(Xvalue>=700 && Yvalue>400 && Yvalue<700 && s==HIGH && j==HIGH){
-    Serial.print("front, jump and shoot");
-    Serial.print ('\t');  
+  if(Xvalue>400 && Xvalue<700){
+    MENSAJE[4]=0;
   }
-}
-void BACK(){
-  if(Xvalue <= 400 &&  Yvalue>400 && Yvalue<700 && s==LOW && j==LOW){
-    Serial.print("back");
-    Serial.print ('\t');
-     
+  if(Yvalue>=700){
+    MENSAJE[5]=2;
   }
-  else if(Xvalue <= 400 &&  Yvalue>400 && Yvalue<700 && s==LOW && j==HIGH){
-    Serial.print("back and jump");
-    Serial.print ('\t');
-     
+  if(Yvalue<=400){
+    MENSAJE[5]=1;
   }
-  else if(Xvalue <= 400 &&  Yvalue>400 && Yvalue<700 && s==HIGH && j==LOW){
-    Serial.print("back and shot");
-    Serial.print ('\t');
-     
+  if(Yvalue>400 && Yvalue<700){
+    MENSAJE[5]=0;
   }
-  else if(Xvalue <= 400 &&  Yvalue>400 && Yvalue<700 && s==HIGH && j==HIGH){
-    Serial.print("back, jump and shot");
-    Serial.print ('\t');
-     
-  }
-}
-void UP(){
-  if(Yvalue>=700 && Xvalue>400 && Xvalue<700 && s==LOW && j==LOW){
-    Serial.print("up");
-    Serial.print ('\t');
-     
-  }
-  else if(Yvalue>=700 && Xvalue>400 && Xvalue<700 && s==LOW && j==HIGH){
-    Serial.print("up and jump");
-    Serial.print ('\t');
-     
-  }
-  else if(Yvalue>=700 && Xvalue>400 && Xvalue<700 && s==HIGH && j==LOW){
-    Serial.print("up and shot");
-    Serial.print ('\t');
-     
-  }
-  else if(Yvalue>=700 && Xvalue>400 && Xvalue<700&& s==HIGH && j==HIGH){
-    Serial.print("up, jump and shot");
-    Serial.print ('\t');
-     
-  }
-}
-void CROUCH(){
-  if(Yvalue <= 400 && Xvalue>400 && Xvalue<700&& s==LOW && j==LOW){
-    Serial.print("crouch");
-    Serial.print ('\t');
-     
-  }
-  else if(Yvalue <= 400 && Xvalue>400 && Xvalue<700 && s==LOW && j==HIGH){
-    Serial.print("crouch and jump");
-    Serial.print ('\t');
-     
-  }
-  else if(Yvalue <= 400 && Xvalue>400 && Xvalue<700&& s==HIGH && j==LOW){
-    Serial.print("crouch and shot");
-    Serial.print ('\t');
-     
-  }
-  if(Yvalue<=400 && Xvalue>400 && Xvalue<700 && s==HIGH && j==HIGH){
-    Serial.print("crouch, jump and shot");
-    Serial.print ('\t');
-     
-  }
-}
-void STANDING(){
-    if (Xvalue>400 && Xvalue<700 && Yvalue>400 && Yvalue<700 && s==LOW && j==LOW){
-    Serial.print("standing"); 
-    Serial.print ('\t');
-     
-  }
-  else if (Xvalue>400 && Xvalue<700 && Yvalue>400 && Yvalue<700 && s==LOW && j==HIGH){
-    Serial.print("standing and jump");
-    Serial.print ('\t'); 
-     
-  }
-  else if (Xvalue>400 && Xvalue<700 && Yvalue>400 && Yvalue<700 && s==HIGH && j==LOW){
-    Serial.print("standing and shot"); 
-    Serial.print ('\t');
-     
-  }
-  else if (Xvalue>400 && Xvalue<700 && Yvalue>400 && Yvalue<700 && s==HIGH&& j==HIGH){
-    Serial.print("standing, jump and shot"); 
-    Serial.print ('\t');
-     
-  }
-}
-void CRUZE(){
-  if(Xvalue>=700 && Yvalue>=700 && s==LOW && j==LOW){
-    Serial.print("right diagonal"); 
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue>=700 && Yvalue>=700 && s==LOW && j==HIGH){
-    Serial.print("right diagonal and jump"); 
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue>=700 && Yvalue>=700 && s==HIGH && j==LOW){
-    Serial.print("right diagonal and shot"); 
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue>=700 && Yvalue>=700 && s==HIGH && j==HIGH){
-    Serial.print("right diagonal, jump and shot");
-    Serial.print ('\t'); 
-     
-  }
-  else if(Xvalue<=400 && Yvalue>=700 && s==LOW && j==LOW){
-    Serial.print("left diagonal"); 
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue<=400 && Yvalue>=700 && s==LOW && j==HIGH){
-    Serial.print("left diagonal and jump"); 
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue<=400 && Yvalue>=700 && s==HIGH && j==LOW){
-    Serial.print("left diagonal and shot"); 
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue<=400 && Yvalue>=700 && s==HIGH && j==HIGH){
-    Serial.print("left diagonal, jump and shot"); 
-    Serial.print ('\t');
-     
-  }
-}
-void NOMOVE(){
-  if(Xvalue>=700 && Yvalue<=400 && s==LOW && j==LOW){
-    Serial.print("front");
-    Serial.print ('\t');
-      
-  }
-  else if(Xvalue>=700 && Yvalue<=400 && s==LOW && j==HIGH){
-    Serial.print("front and jump");
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue>=700 && Yvalue<=400 && s==HIGH && j==LOW){
-    Serial.print("front and shot");
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue>=700 && Yvalue<=400 && s==HIGH && j==HIGH){ 
-    Serial.print("front, jump and shot");
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue<=400 && Yvalue<=400 && s==LOW && j==LOW){
-    Serial.print("back");
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue<=400 && Yvalue<=400 && s==LOW && j==HIGH){
-    Serial.print("back and jump");
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue<=400 && Yvalue<=400 && s==HIGH && j==LOW){
-    Serial.print("back and shot");
-    Serial.print ('\t');
-     
-  }
-  else if(Xvalue<=400 && Yvalue<=400 && s==HIGH && j==HIGH){
-    Serial.print("back, jump and shot");
-    Serial.print ('\t');
-     
-  }
-}
 
-//funciones del segundo jugador que permiten su movimiento y acciones
-void FRONT2(){
-  if(Xvalue2>=700 && Yvalue2>400 && Yvalue2<700 && s2==LOW && j2==LOW){
-    Serial.println("front");
-      
+  if(s2==HIGH){
+    ju2=1;
   }
-  else if(Xvalue2>=700 && Yvalue2>400 && Yvalue2<700 && s2==LOW && j2==HIGH){
-    Serial.println("front and jump");
-      
+  if (s2==LOW && ju2==1){
+    MENSAJE[6]=1;
+    ju2=0;
   }
-  else if(Xvalue2>=700 && Yvalue2>400 && Yvalue2<700 && s2==HIGH && j2==LOW){
-    Serial.println("front and shot");
-      
+
+  if(j2==HIGH){
+    sh2=1;
   }
-  else if(Xvalue2>=700 && Yvalue2>400 && Yvalue2<700 && s2==HIGH && j2==HIGH){
-    Serial.println("front, jump and shoot");
-      
+  if(j2==LOW && sh2==1){
+    MENSAJE[7]=1;
+    sh2=0;
   }
-}
-void BACK2(){
-  if(Xvalue2 <= 400 &&  Yvalue2>400 && Yvalue2<700 && s2==LOW && j2==LOW){
-    Serial.println("back");
-     
+  
+  if(Xvalue2>=700){
+    MENSAJE[8]=2;
   }
-  else if(Xvalue2 <= 400 &&  Yvalue2>400 && Yvalue2<700 && s2==LOW && j2==HIGH){
-    Serial.println("back and jump");
-     
+  if(Xvalue2<=400){
+    MENSAJE[8]=1;
   }
-  else if(Xvalue2 <= 400 &&  Yvalue2>400 && Yvalue2<700 && s2==HIGH && j2==LOW){
-    Serial.println("back and shot");
-     
+  if(Xvalue2>400 && Xvalue2<700){
+    MENSAJE[8]=0;
   }
-  else if(Xvalue2 <= 400 &&  Yvalue2>400 && Yvalue2<700 && s2==HIGH && j2==HIGH){
-    Serial.println("back, jump and shot");
-     
+  if(Yvalue2>=700){
+    MENSAJE[9]=2;
   }
-}
-void UP2(){
-  if(Yvalue2>=700 && Xvalue2>400 && Xvalue2<700 && s2==LOW && j2==LOW){
-    Serial.println("up");
-     
+  if(Yvalue2<=400){
+    MENSAJE[9]=1;
   }
-  else if(Yvalue2>=700 && Xvalue2>400 && Xvalue2<700 && s2==LOW && j2==HIGH){
-    Serial.println("up and jump");
-     
+  if(Yvalue2>400 && Yvalue2<700){
+    MENSAJE[9]=0;
   }
-  else if(Yvalue2>=700 && Xvalue2>400 && Xvalue2<700 && s2==HIGH && j2==LOW){
-    Serial.println("up and shot");
-     
+  Serial.write(3);
+  x=0;
+  for(x=0;x<=9;x++){
+    Serial.write(MENSAJE[x]);
   }
-  else if(Yvalue2>=700 && Xvalue2>400 && Xvalue2<700&& s2==HIGH && j2==HIGH){
-    Serial.println("up, jump and shot");
-     
-  }
-}
-void CROUCH2(){
-  if(Yvalue2 <= 400 && Xvalue2>400 && Xvalue2<700&& s2==LOW && j2==LOW){
-    Serial.println("crouch");
-     
-  }
-  else if(Yvalue2 <= 400 && Xvalue2>400 && Xvalue2<700 && s2==LOW && j2==HIGH){
-    Serial.println("crouch and jump");
-     
-  }
-  else if(Yvalue2 <= 400 && Xvalue2>400 && Xvalue2<700&& s2==HIGH && j2==LOW){
-    Serial.println("crouch and shot");
-     
-  }
-  if(Yvalue2<=400 && Xvalue2>400 && Xvalue2<700 && s2==HIGH && j2==HIGH){
-    Serial.println("crouch, jump and shot");
-     
-  }
-}
-void STANDING2(){
-    if (Xvalue2>400 && Xvalue2<700 && Yvalue2>400 && Yvalue2<700 && s2==LOW && j2==LOW){
-    Serial.println("standing"); 
-     
-  }
-  else if (Xvalue2>400 && Xvalue2<700 && Yvalue2>400 && Yvalue2<700 && s2==LOW && j2==HIGH){
-    Serial.println("standing and jump"); 
-     
-  }
-  else if (Xvalue2>400 && Xvalue2<700 && Yvalue2>400 && Yvalue2<700 && s2==HIGH && j2==LOW){
-    Serial.println("standing and shot"); 
-     
-  }
-  else if (Xvalue2>400 && Xvalue2<700 && Yvalue2>400 && Yvalue2<700 && s2==HIGH&& j2==HIGH){
-    Serial.println("standing, jump and shot"); 
-     
-  }
-}
-void CRUZE2(){
-  if(Xvalue2>=700 && Yvalue2>=700 && s2==LOW && j2==LOW){
-    Serial.println("right diagonal"); 
-     
-  }
-  else if(Xvalue2>=700 && Yvalue2>=700 && s2==LOW && j2==HIGH){
-    Serial.println("right diagonal and jump");
-     
-  }
-  else if(Xvalue2>=700 && Yvalue2>=700 && s2==HIGH && j2==LOW){
-    Serial.println("right diagonal and shot"); 
-     
-  }
-  else if(Xvalue2>=700 && Yvalue2>=700 && s2==HIGH && j2==HIGH){
-    Serial.println("right diagonal, jump and shot"); 
-     
-  }
-  else if(Xvalue2<=400 && Yvalue2>=700 && s2==LOW && j2==LOW){
-    Serial.println("left diagonal"); 
-     
-  }
-  else if(Xvalue2<=400 && Yvalue2>=700 && s2==LOW && j2==HIGH){
-    Serial.println("left diagonal and jump"); 
-     
-  }
-  else if(Xvalue2<=400 && Yvalue2>=700 && s2==HIGH && j2==LOW){
-    Serial.println("left diagonal and shot"); 
-     
-  }
-  else if(Xvalue2<=400 && Yvalue2>=700 && s2==HIGH && j2==HIGH){
-    Serial.println("left diagonal, jump and shot"); 
-     
-  }
-}
-void NOMOVE2(){
-  if(Xvalue2>=700 && Yvalue2<=400 && s2==LOW && j2==LOW){
-    Serial.println("front");
-      
-  }
-  else if(Xvalue2>=700 && Yvalue2<=400 && s2==LOW && j2==HIGH){
-    Serial.println("front and jump");
-     
-  }
-  else if(Xvalue2>=700 && Yvalue2<=400 && s2==HIGH && j2==LOW){
-    Serial.println("front and shot");
-     
-  }
-  else if(Xvalue2>=700 && Yvalue2<=400 && s2==HIGH && j2==HIGH){ 
-    Serial.println("front, jump and shot");
-     
-  }
-  else if(Xvalue2<=400 && Yvalue2<=400 && s2==LOW && j2==LOW){
-    Serial.println("back");
-     
-  }
-  else if(Xvalue2<=400 && Yvalue2<=400 && s2==LOW && j2==HIGH){
-    Serial.println("back and jump");
-     
-  }
-  else if(Xvalue2<=400 && Yvalue2<=400 && s2==HIGH && j2==LOW){
-    Serial.println("back and shot");
-     
-  }
-  else if(Xvalue2<=400 && Yvalue2<=400 && s2==HIGH && j2==HIGH){
-    Serial.println("back, jump and shot");
- 
-  }
+  Serial.write(4);
+  MENSAJE[0]=0;
+  MENSAJE[1]=0;
+  MENSAJE[6]=0;
+  MENSAJE[7]=0;
 }
