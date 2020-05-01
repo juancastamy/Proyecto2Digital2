@@ -77,6 +77,12 @@ int STOP2;
 // variable para pausa
 int PAUSE;
 int PAUSE2;
+int SET=0;
+int xl;
+int BIT=0;
+int x=0;
+int Fl=0;
+int Bl=0;
 //***************************************************************************************************************************************
 // Functions Prototypes
 //***************************************************************************************************************************************
@@ -93,7 +99,37 @@ void LCD_Print(String text, int x, int y, int fontSize, int color, int backgroun
 
 void LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
 void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
+//Main Screen
+extern uint8_t title_screen[];
+extern uint8_t characters[];
+//Enemies
+extern uint8_t boss[];
+extern uint8_t spider[];
+extern uint8_t soldier[];
+//Bullet
+extern uint8_t bullet[];
+//Bill Rizer
+extern uint8_t bill_dying[];
+extern uint8_t bill_jumping[];
+extern uint8_t bill_running[];
+extern uint8_t bill_shooting[];
+extern uint8_t bill_shooting_running[];
+extern uint8_t bill_shooting_down[];
+extern uint8_t bill_upward_shooting[];
+extern uint8_t bill_upward_shooting_with_angle[];
+extern uint8_t bill_downward_shooting_with_angle[];
+//Lance Bean
+extern uint8_t lance_dying[];
+extern uint8_t lance_jumping[];
+extern uint8_t lance_running[];
+extern uint8_t lance_shooting[];
+extern uint8_t lance_shooting_running[];
+extern uint8_t lance_shooting_down[];
+extern uint8_t lance_upward_shooting[];
+extern uint8_t lance_upward_shooting_with_angle[];
+extern uint8_t lance_downward_shooting_with_angle[];
 void MANDOS(void);
+void INICIO(void);
 
 //***************************************************************************************************************************************
 // Inicialización
@@ -119,6 +155,7 @@ void setup() {
   // variable para pausa
   PAUSE=0;
   PAUSE2=0;
+  SET=0;
   SysCtlClockSet(SYSCTL_SYSDIV_2_5|SYSCTL_USE_PLL|SYSCTL_OSC_MAIN|SYSCTL_XTAL_16MHZ);
   Serial.begin(9600);
   GPIOPadConfigSet(GPIO_PORTB_BASE, 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
@@ -151,27 +188,50 @@ void setup() {
 //***************************************************************************************************************************************
 void loop() {
   MANDOS();
-    if(MENSAJE[2]==0 && MENSAJE[3]==0){
-    switch(BLINK){
-      case 0:
-        if(BLINK==0){
-          String text1 = "Press A";
-          LCD_Print(text1, 100, 150, 2, 0xffff, 0x00);
-          delay(100);
-          }
-          BLINK++;
-          break;
-      case 1:
-        if(BLINK==1){
-          String text1 = "Press A";
-          LCD_Print(text1, 100, 150, 2, 0x00, 0x00);
-          delay(100);        
-          }
-          BLINK=0;
-          break;
+  if (SET==0){
+      INICIO();
   }
+  if(SET==1){
+      FillRect(0,100,320,30,0xC67B);
+      FillRect(0,200,320,30,0xC67B);
+      switch (MENSAJE[8]){
+        case 0:
+         LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+         break;
+        case 1:
+          Fl=1;
+          LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+          break;
+        case 2:
+          Fl=0;
+          LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+          break;
+      }
+      switch (MENSAJE[4]){
+        case 0:
+         LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+         break;
+        case 1:
+          Bl=1;
+          LCD_Sprite(143,56,35,44,lance_shooting,2,0,Bl,0);
+          break;
+        case 2:
+          Bl=0;
+          LCD_Sprite(143,56,35,44,lance_shooting,2,0,Bl,0);
+          break;
+      }
   }
-  
+      /*if(MENSAJE[8]==2){
+        if(x<320-35){
+          x=x+1;
+        delay(5);
+        int xl=(x/10)%6;
+        LCD_Sprite(x,156,35,44,lance_running,6,xl,0,0);
+        V_line(x-1,156,44, 0x00);
+        LCD_Sprite(0,156,35,44,bill_shooting,2,1,0,0);
+      }
+      }*/
+      
   /*
   for(int x = 0; x <320-35; x++){
     delay(5);
@@ -189,6 +249,11 @@ void loop() {
     LCD_Sprite(x,100,41,44,spider,4,anim2,0,0);
     V_line( x + 41, 100, 44, 0x00); //16
   }*/
+
+ MENSAJE[0]=0;
+  MENSAJE[1]=0;
+  MENSAJE[6]=0;
+  MENSAJE[7]=0;
 }
 //***************************************************************************************************************************************
 // Función para inicializar LCD
@@ -420,7 +485,7 @@ void LCD_Print(String text, int x, int y, int fontSize, int color, int backgroun
   
   char charInput ;
   int cLength = text.length();
-  Serial.println(cLength,DEC);
+  //Serial.println(cLength,DEC);
   int charDec ;
   int c ;
   int charHex ;
@@ -428,7 +493,7 @@ void LCD_Print(String text, int x, int y, int fontSize, int color, int backgroun
   text.toCharArray(char_array, cLength+1) ;
   for (int i = 0; i < cLength ; i++) {
     charInput = char_array[i];
-    Serial.println(char_array[i]);
+    //Serial.println(char_array[i]);
     charDec = int(charInput);
     digitalWrite(LCD_CS, LOW);
     SetWindows(x + (i * fontXSize), y, x + (i * fontXSize) + fontXSize - 1, y + fontYSize );
@@ -528,23 +593,23 @@ void MANDOS(void){
 
    //Lectura de puerto analogico primer jugador
   Xvalue=analogRead(X);
-  MAPX = map(Xvalue,0,1023,0,255);
   Yvalue=analogRead(Y);
-  MAPY = map(Yvalue,0,1023,0,255);
 
 
   //Lectura de puerto analogico segundo jugador
   Xvalue2=analogRead(X2);
-  MAPX2 = map(Xvalue2,0,4050,0,255);
   Yvalue2=analogRead(Y2);
-  MAPY2 = map(Yvalue2,0,4050,0,255);
   if(s==HIGH){
     ju = 1;
   }
   if (s==LOW && ju==1){
     MENSAJE[0] = 1;
     ju=0;
-  }
+    if(SET==0){
+      LCD_Clear(0x00);
+      SET++;
+    }
+    }
 
   if(j==HIGH){
     sh=1;
@@ -583,22 +648,23 @@ void MANDOS(void){
     MENSAJE[3]=0;
   }
   
-  if(MAPX>=138){
+  if(Xvalue>=3000){
     MENSAJE[4]=2;
+    Serial.println(Xvalue);
   }
-  if(MAPX<=117){
+  if(Xvalue<=1500){
     MENSAJE[4]=1;
   }
-  if(MAPX>117 && MAPX<138){
+  if(Xvalue>1500 && Xvalue<3000){
     MENSAJE[4]=0;
   }
-  if(MAPY>=138){
+  if(Yvalue>=1500){
     MENSAJE[5]=2;
   }
-  if(MAPY<=117){
+  if(Yvalue<=3000){
     MENSAJE[5]=1;
   }
-  if(MAPY>117 && MAPY<138){
+  if(Yvalue>1500 && Yvalue<3000){
     MENSAJE[5]=0;
   }
 
@@ -608,6 +674,10 @@ void MANDOS(void){
   if (s2==LOW && ju2==1){
     MENSAJE[6]=1;
     ju2=0;
+    if(SET==0){
+      LCD_Clear(0x00);
+      SET++;
+    }
   }
 
   if(j2==HIGH){
@@ -618,26 +688,48 @@ void MANDOS(void){
     sh2=0;
   }
   
-  if(MAPX2>=138){
+  if(Xvalue2>=1500){
     MENSAJE[8]=2;
   }
-  if(MAPX2<=117){
+  if(Xvalue2<=1500){
     MENSAJE[8]=1;
   }
-  if(MAPX2>117 && MAPX2<138){
+  if(Xvalue2>1500 && Xvalue2<3000){
     MENSAJE[8]=0;
   }
-  if(MAPY2>=138){
+  if(Yvalue2>=1500){
     MENSAJE[9]=2;
   }
-  if(MAPY2<=117){
+  if(Yvalue2<=3000){
     MENSAJE[9]=1;
   }
-  if(MAPY2>117 && MAPY2<138){
+  if(Yvalue2>1500 && Yvalue2<3000){
     MENSAJE[9]=0;
   }
-  MENSAJE[0]=0;
-  MENSAJE[1]=0;
-  MENSAJE[6]=0;
-  MENSAJE[7]=0;
+  for(BIT=0;BIT<=9;BIT++){
+    Serial.print(MENSAJE[BIT]);
+  }
+  Serial.println("");
+}
+void INICIO(void){
+  if(MENSAJE[2]==0 && MENSAJE[3]==0 && SET==0){
+    switch(BLINK){
+      case 0:
+        if(BLINK==0){
+          String text1 = "Press A";
+          LCD_Print(text1, 100, 150, 2, 0xffff, 0x00);
+          delay(100);
+          }
+          BLINK++;
+          break;
+      case 1:
+        if(BLINK==1){
+          String text1 = "Press A";
+          LCD_Print(text1, 100, 150, 2, 0x00, 0x00);
+          delay(100);        
+          }
+          BLINK=0;
+          break;
+    }
+  }
 }
