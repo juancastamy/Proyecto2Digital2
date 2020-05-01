@@ -36,7 +36,47 @@
 #define LCD_RS PD_2
 #define LCD_WR PD_3
 #define LCD_RD PE_1
+#define X PE_4
+#define Y PE_5
+#define shot PA_7
+#define jump PA_6
+#define start PA_5
+//se define los puertos para el segundo jugador
+#define X2 PE_2
+#define Y2 PE_3
+#define shot2 PA_2
+#define jump2 PA_3
+#define start2 PA_4
 int DPINS[] = {PB_0, PB_1, PB_2, PB_3, PB_4, PB_5, PB_6, PB_7};  
+int BLINK;
+int MENSAJE[] = {0,0,0,0,0,0,0,0,0,0};
+//varianles de disparo y salto primer jugado
+int s;
+int j;
+int Xvalue;
+int Yvalue;
+int MAPX;
+int MAPY;
+int START;
+
+//varianles de disparo y salto segundo jugado
+int s2;
+int j2;
+int Xvalue2;
+int MAPX2;
+int Yvalue2;
+int MAPY2;
+int START2;
+//variable para anti rebote
+int ju;
+int ju2;
+int sh;
+int sh2;
+int STOP;
+int STOP2;
+// variable para pausa
+int PAUSE;
+int PAUSE2;
 //***************************************************************************************************************************************
 // Functions Prototypes
 //***************************************************************************************************************************************
@@ -53,24 +93,44 @@ void LCD_Print(String text, int x, int y, int fontSize, int color, int backgroun
 
 void LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
 void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
+void MANDOS(void);
 
 //***************************************************************************************************************************************
 // Inicialización
 //***************************************************************************************************************************************
 void setup() {
+  BLINK=0;
+  pinMode(shot,INPUT);
+  pinMode(jump,INPUT);
+  pinMode(start,INPUT);
+
+  //definicion de puertos segundo jugador
+  pinMode(shot2,INPUT);
+  pinMode(jump2,INPUT);
+  pinMode(start2,INPUT); 
+  // put your setup code here, to run once:
+  //variable para anti rebote
+  ju=0;
+  ju2=0;
+  sh=0;
+  sh2=0;
+  STOP=0;
+  STOP2=0;
+  // variable para pausa
+  PAUSE=0;
+  PAUSE2=0;
   SysCtlClockSet(SYSCTL_SYSDIV_2_5|SYSCTL_USE_PLL|SYSCTL_OSC_MAIN|SYSCTL_XTAL_16MHZ);
   Serial.begin(9600);
   GPIOPadConfigSet(GPIO_PORTB_BASE, 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
   Serial.println("Inicio");
   LCD_Init();
   LCD_Clear(0x00);
-  /*
+  
   //FillRect(0, 0, 194, 84, 0xff);
   LCD_Bitmap(108, 40, 105, 44, title_screen);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
   LCD_Bitmap(131, 98, 59, 45, characters);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
   
-  String text1 = "Press Start";
-  LCD_Print(text1, 70, 150, 2, 0xffff, 0x00);*/
+  
   //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
     
   //LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
@@ -89,7 +149,30 @@ void setup() {
 //***************************************************************************************************************************************
 // Loop Infinito
 //***************************************************************************************************************************************
-void loop() {/*
+void loop() {
+  MANDOS();
+    if(MENSAJE[2]==0 && MENSAJE[3]==0){
+    switch(BLINK){
+      case 0:
+        if(BLINK==0){
+          String text1 = "Press A";
+          LCD_Print(text1, 100, 150, 2, 0xffff, 0x00);
+          delay(100);
+          }
+          BLINK++;
+          break;
+      case 1:
+        if(BLINK==1){
+          String text1 = "Press A";
+          LCD_Print(text1, 100, 150, 2, 0x00, 0x00);
+          delay(100);        
+          }
+          BLINK=0;
+          break;
+  }
+  }
+  
+  /*
   for(int x = 0; x <320-35; x++){
     delay(5);
     int anim = (x/10)%7;
@@ -99,13 +182,13 @@ void loop() {/*
     V_line( x -1, 100, 44, 0x00);  
   }*/
 //******************************************************************************************************************************************  
-  for(int x = 320-35; x >0; x--){
+  /*for(int x = 320-35; x >0; x--){
     delay(5);
     int anim2 = (x/10)%4;
     
     LCD_Sprite(x,100,41,44,spider,4,anim2,0,0);
     V_line( x + 41, 100, 44, 0x00); //16
-  }
+  }*/
 }
 //***************************************************************************************************************************************
 // Función para inicializar LCD
@@ -432,4 +515,129 @@ void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int 
     
     }
   digitalWrite(LCD_CS, HIGH);
+}
+void MANDOS(void){
+  s=digitalRead(shot);
+  j=digitalRead(jump);
+  START=digitalRead(start);
+  
+  //se leen los botones del jugador 2
+  s2=digitalRead(shot2);
+  j2=digitalRead(jump2);
+  START2=digitalRead(start2);
+
+   //Lectura de puerto analogico primer jugador
+  Xvalue=analogRead(X);
+  MAPX = map(Xvalue,0,1023,0,255);
+  Yvalue=analogRead(Y);
+  MAPY = map(Yvalue,0,1023,0,255);
+
+
+  //Lectura de puerto analogico segundo jugador
+  Xvalue2=analogRead(X2);
+  MAPX2 = map(Xvalue2,0,4050,0,255);
+  Yvalue2=analogRead(Y2);
+  MAPY2 = map(Yvalue2,0,4050,0,255);
+  if(s==HIGH){
+    ju = 1;
+  }
+  if (s==LOW && ju==1){
+    MENSAJE[0] = 1;
+    ju=0;
+  }
+
+  if(j==HIGH){
+    sh=1;
+  }
+  if(j==LOW && sh==1){
+    MENSAJE[1]=1;
+    sh=0;
+    }
+
+  if(START==HIGH && PAUSE2==0){
+    STOP=1;
+  }
+  if(START2==HIGH && PAUSE==0){
+    STOP2=1;
+  }
+  if(START==LOW && STOP==1 && PAUSE2==0){
+    PAUSE=~PAUSE;
+    STOP=0;
+  }
+  if(START2==LOW && STOP2==1 && PAUSE==0){
+    PAUSE2=~PAUSE2;
+    STOP2=0;
+  }
+  if(PAUSE==-1){
+    MENSAJE[2]=1;
+    PAUSE2=0;
+  }
+   else{
+    MENSAJE[2]=0;
+  }
+  if(PAUSE2==-1){
+    MENSAJE[3]=1;
+    PAUSE=0;
+  }
+  else{
+    MENSAJE[3]=0;
+  }
+  
+  if(MAPX>=138){
+    MENSAJE[4]=2;
+  }
+  if(MAPX<=117){
+    MENSAJE[4]=1;
+  }
+  if(MAPX>117 && MAPX<138){
+    MENSAJE[4]=0;
+  }
+  if(MAPY>=138){
+    MENSAJE[5]=2;
+  }
+  if(MAPY<=117){
+    MENSAJE[5]=1;
+  }
+  if(MAPY>117 && MAPY<138){
+    MENSAJE[5]=0;
+  }
+
+  if(s2==HIGH){
+    ju2=1;
+  }
+  if (s2==LOW && ju2==1){
+    MENSAJE[6]=1;
+    ju2=0;
+  }
+
+  if(j2==HIGH){
+    sh2=1;
+  }
+  if(j2==LOW && sh2==1){
+    MENSAJE[7]=1;
+    sh2=0;
+  }
+  
+  if(MAPX2>=138){
+    MENSAJE[8]=2;
+  }
+  if(MAPX2<=117){
+    MENSAJE[8]=1;
+  }
+  if(MAPX2>117 && MAPX2<138){
+    MENSAJE[8]=0;
+  }
+  if(MAPY2>=138){
+    MENSAJE[9]=2;
+  }
+  if(MAPY2<=117){
+    MENSAJE[9]=1;
+  }
+  if(MAPY2>117 && MAPY2<138){
+    MENSAJE[9]=0;
+  }
+  MENSAJE[0]=0;
+  MENSAJE[1]=0;
+  MENSAJE[6]=0;
+  MENSAJE[7]=0;
 }
