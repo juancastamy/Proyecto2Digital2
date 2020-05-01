@@ -221,34 +221,36 @@ void loop() {
           break;
       }
   }
-      /*if(MENSAJE[8]==2){
-        if(x<320-35){
-          x=x+1;
-        delay(5);
-        int xl=(x/10)%6;
-        LCD_Sprite(x,156,35,44,lance_running,6,xl,0,0);
-        V_line(x-1,156,44, 0x00);
-        LCD_Sprite(0,156,35,44,bill_shooting,2,1,0,0);
-      }
-      }*/
-      
-  /*
-  for(int x = 0; x <320-35; x++){
+//********************************************ANIMACIONES ENEMIGOS****************************************************************
+  for(int x = 0; x <320-57; x++){
     delay(5);
-    int anim = (x/10)%7;
-
+    int anim = (x/10)%2;
+    int anim2 = (x/5)%7;
+    int anim3 = (x/5)%4;
     //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
-    LCD_Sprite(x,100,35,44,soldier,7,anim,1,0);
-    V_line( x -1, 100, 44, 0x00);  
-  }*/
-//******************************************************************************************************************************************  
-  /*for(int x = 320-35; x >0; x--){
+    LCD_Sprite(x,20,57,60,boss,2,anim,0,0);
+    V_line( x -1, 20, 60, 0x00); 
+
+    LCD_Sprite(x,100,35,44,soldier,7,anim2,1,0);
+    V_line( x -1, 100, 44, 0x00);
+
+    LCD_Sprite(x,150,41,44,spider,4,anim3,1,0);
+    V_line( x -1, 150, 44, 0x00);
+  }
+  for(int x = 320-57; x >0; x--){
     delay(5);
-    int anim2 = (x/10)%4;
-    
-    LCD_Sprite(x,100,41,44,spider,4,anim2,0,0);
-    V_line( x + 41, 100, 44, 0x00); //16
-  }*/
+    int anim = (x/10)%2;
+    int anim2 = (x/5)%7;
+    int anim3 = (x/5)%4;
+    LCD_Sprite(x,20,57,60,boss,2,anim,0,0);
+    V_line( x + 57, 20, 60, 0x00);
+
+    LCD_Sprite(x,100,35,44,soldier,7,anim2,0,0);
+    V_line( x + 35, 100, 60, 0x00);
+
+    LCD_Sprite(x,150,41,44,spider,4,anim3,0,0);
+    V_line( x + 41, 150, 44, 0x00);
+  }
 
  MENSAJE[0]=0;
   MENSAJE[1]=0;
