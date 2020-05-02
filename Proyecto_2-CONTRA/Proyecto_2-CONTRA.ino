@@ -55,17 +55,13 @@ int s;
 int j;
 int Xvalue;
 int Yvalue;
-int MAPX;
-int MAPY;
 int START;
 
 //varianles de disparo y salto segundo jugado
 int s2;
 int j2;
 int Xvalue2;
-int MAPX2;
 int Yvalue2;
-int MAPY2;
 int START2;
 //variable para anti rebote
 int ju;
@@ -80,9 +76,48 @@ int PAUSE2;
 int SET=0;
 int xl;
 int BIT=0;
-int x=0;
+int l=0;
 int Fl=0;
 int Bl=0;
+int b=0;
+int bl=0;
+int BILL=0;
+int LANCE=0;
+//SOLDADOS IZQUIERDA-DERECHA
+int animSOLD;
+int SOLDADO=0;
+int XSL=0;
+//****//
+int SOLDADO2=0;
+int XSL2=35;
+//SOLDADOS DERECHA-IZQUIERDA
+int SOLDADO3=0;
+int XSR=285;
+
+//ARAÑAS IZQUIERDA-DERECHA
+int animARA;
+int ARANA1=0;
+int XAL1=0;
+//ARAÑAS DERECHA-IZQUIERDA
+int ARANA2=0;
+int XAR1=279;
+
+//BOSS IZQUIERDA-DERECHA
+int animBOSS;
+int BOSSL=0;
+int XBL=0;
+//BOSS DERECHA-IZQUIERDA
+int BOSSR=0;
+int XBR=260;
+
+//BALA IZQUIERDA=DERECHA
+int animBULLET;
+int BALA=0;
+int XBAL=143;
+int N=0;
+//int anim;
+//int anim2;
+//int anim3;
 //***************************************************************************************************************************************
 // Functions Prototypes
 //***************************************************************************************************************************************
@@ -130,7 +165,22 @@ extern uint8_t lance_upward_shooting_with_angle[];
 extern uint8_t lance_downward_shooting_with_angle[];
 void MANDOS(void);
 void INICIO(void);
-
+void MOVIMIENTO(void);
+//SOLDADOS LEFT
+void SOLDADOL(void);
+void SOLDADOL2(void);
+//SOLDADOS RIGHT
+void SOLDADOR(void);
+//ARANAS LEFT
+void ARANAL(void);
+//ARANAS RIGHT
+void ARANAR(void);
+//BOSS LEFT
+void BOSS_LEFT(void);
+//BOSS RIGHT
+void BOSS_RIGHT(void);
+//BALA
+void BALAL(void);
 //***************************************************************************************************************************************
 // Inicialización
 //***************************************************************************************************************************************
@@ -194,37 +244,37 @@ void loop() {
   if(SET==1){
       FillRect(0,100,320,30,0xC67B);
       FillRect(0,200,320,30,0xC67B);
-      switch (MENSAJE[8]){
-        case 0:
-         LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
-         break;
-        case 1:
-          Fl=1;
-          LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
-          break;
-        case 2:
-          Fl=0;
-          LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
-          break;
-      }
-      switch (MENSAJE[4]){
-        case 0:
-         LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
-         break;
-        case 1:
-          Bl=1;
-          LCD_Sprite(143,56,35,44,lance_shooting,2,0,Bl,0);
-          break;
-        case 2:
-          Bl=0;
-          LCD_Sprite(143,56,35,44,lance_shooting,2,0,Bl,0);
-          break;
-      }
-  }
+        MOVIMIENTO();
+
+        //SOLDADOL();
+        //SOLDADOL2();
+        //SOLDADOR();
+        if(XAL1>=0 && XAL1<=110){
+          ARANAL();
+          if((XAL1+41)==XBAL){
+            
+          }
+        }
+        else{
+        }
+        if(N==1 && XBAL>=0 &&XBAL<=143){
+          BALAL();
+        }
+        else{
+          N=0;
+          XBAL=143;
+        }
+
+        //ARANAR();
+        //BOSS_LEFT();
+        //BOSS_RIGHT();
+        
+        
+     
 //********************************************ANIMACIONES ENEMIGOS****************************************************************
-  for(int x = 0; x <320-57; x++){
+  /*for(int x = 0; x <320-57; x++){
     delay(5);
-    int anim = (x/10)%2;
+    int anim = (x/5)%2;
     int anim2 = (x/5)%7;
     int anim3 = (x/5)%4;
     //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
@@ -239,7 +289,7 @@ void loop() {
   }
   for(int x = 320-57; x >0; x--){
     delay(5);
-    int anim = (x/10)%2;
+    int anim = (x/5)%2;
     int anim2 = (x/5)%7;
     int anim3 = (x/5)%4;
     LCD_Sprite(x,20,57,60,boss,2,anim,0,0);
@@ -250,9 +300,9 @@ void loop() {
 
     LCD_Sprite(x,150,41,44,spider,4,anim3,0,0);
     V_line( x + 41, 150, 44, 0x00);
+  }*/
   }
-
- MENSAJE[0]=0;
+  MENSAJE[0]=0;
   MENSAJE[1]=0;
   MENSAJE[6]=0;
   MENSAJE[7]=0;
@@ -602,23 +652,23 @@ void MANDOS(void){
   Xvalue2=analogRead(X2);
   Yvalue2=analogRead(Y2);
   if(s==HIGH){
-    ju = 1;
+    sh = 1;
   }
-  if (s==LOW && ju==1){
+  if (s==LOW && sh==1){
     MENSAJE[0] = 1;
-    ju=0;
+    sh=0;
+    }
+
+  if(j==HIGH){
+    ju=1;
+  }
+  if(j==LOW && ju==1){
+    MENSAJE[1]=1;
     if(SET==0){
       LCD_Clear(0x00);
       SET++;
     }
-    }
-
-  if(j==HIGH){
-    sh=1;
-  }
-  if(j==LOW && sh==1){
-    MENSAJE[1]=1;
-    sh=0;
+    ju=0;
     }
 
   if(START==HIGH && PAUSE2==0){
@@ -671,23 +721,23 @@ void MANDOS(void){
   }
 
   if(s2==HIGH){
+    sh2=1;
+  }
+  if (s2==LOW && sh2==1){
+    MENSAJE[6]=1;
+    sh2=0;
+  }
+
+  if(j2==HIGH){
     ju2=1;
   }
-  if (s2==LOW && ju2==1){
-    MENSAJE[6]=1;
-    ju2=0;
+  if(j2==LOW && ju2==1){
+    MENSAJE[7]=1;
     if(SET==0){
       LCD_Clear(0x00);
       SET++;
     }
-  }
-
-  if(j2==HIGH){
-    sh2=1;
-  }
-  if(j2==LOW && sh2==1){
-    MENSAJE[7]=1;
-    sh2=0;
+    ju2=0;
   }
   
   if(Xvalue2>=1500){
@@ -733,5 +783,579 @@ void INICIO(void){
           BLINK=0;
           break;
     }
+  }
+}
+void MOVIMIENTO(void){
+  switch (BILL){
+        case 0:
+          if(MENSAJE[4]==0 && MENSAJE[5]==0){
+              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+            BILL++;
+          }
+          break;
+        case 1:
+          if(MENSAJE[4]==0 && MENSAJE[5]==0){
+          if(MENSAJE[0]==1){
+              LCD_Sprite(143,56,35,44,bill_shooting,2,1,Bl,0);
+            }
+            else{
+              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+            }
+          }
+          if(MENSAJE[4]==2 && MENSAJE[5]==1){
+            LCD_Sprite(143,56,35,44,bill_downward_shooting_with_angle,3,0,Bl,0);
+            }
+          if(MENSAJE[4]==1 && MENSAJE[5]==1){
+            Bl=1;
+            LCD_Sprite(143,56,35,44,bill_shooting_down,1,0,Bl,0);
+            BILL++;
+            }
+          if(MENSAJE[4]==0 && MENSAJE[5]==1){
+            LCD_Sprite(143,56,35,44,bill_shooting_down,1,0,Bl,0);
+            }
+          if(MENSAJE[4]==0 && MENSAJE[5]==0){
+            LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+            }
+          if(MENSAJE[4]==1 && MENSAJE[5]==0){
+            Bl=1;
+            if(MENSAJE[0]==1){
+              LCD_Sprite(143,56,35,44,bill_shooting,2,1,Bl,0);
+            }
+            else{
+              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+            }
+            BILL++;
+          }
+          break;
+        case 2:
+          if(MENSAJE[4]==0 && MENSAJE[5]==0){
+            if(MENSAJE[0]==1){
+               LCD_Sprite(143,56,35,44,bill_shooting,2,1,Bl,0);
+               N=1;
+              }
+            else{
+              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+            }
+          }
+          if(MENSAJE[4]==1 && MENSAJE[5]==1){
+              LCD_Sprite(143,56,35,44,bill_downward_shooting_with_angle,3,0,Bl,0);
+            }
+            if(MENSAJE[4]==0 && MENSAJE[5]==1){
+              LCD_Sprite(143,56,35,44,bill_shooting_down,1,0,Bl,0);
+            }
+            if(MENSAJE[4]==0 && MENSAJE[5]==0){
+              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+            }
+          if(MENSAJE[4]==2 && MENSAJE[5]==1){
+            Bl=0;
+            LCD_Sprite(143,56,35,44,bill_downward_shooting_with_angle,3,0,Bl,0);
+            BILL=0;
+            }
+          if(MENSAJE[4]==2 && MENSAJE[5]==0){
+            Bl=0;
+            if(MENSAJE[0]==1){
+              LCD_Sprite(143,56,35,44,bill_shooting,2,1,Bl,0);
+            }
+            else{
+              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+            }
+            BILL=0;
+          }
+          break;
+      }
+      switch (LANCE){
+        case 0:
+          if(MENSAJE[8]==0){
+            LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+            LANCE++;
+          }
+          break;
+        case 1:
+        if(MENSAJE[8]==0 && MENSAJE[9]==0){
+            if(MENSAJE[6]==1){
+               LCD_Sprite(143,156,35,44,lance_shooting,2,1,Fl,0);
+              }
+            else{
+              LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+            }
+          }
+          if(MENSAJE[8]==2 && MENSAJE[9]==2){
+            LCD_Sprite(143,156,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
+            }
+          if(MENSAJE[8]==1 && MENSAJE[9]==2){
+            Fl=1;
+            LCD_Sprite(143,156,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
+            LANCE++;
+            }
+          if(MENSAJE[8]==0 && MENSAJE[9]==2){
+            LCD_Sprite(143,156,35,44,lance_upward_shooting,2,0,Fl,0);
+            }
+          if(MENSAJE[8]==2 && MENSAJE[9]==1){
+            LCD_Sprite(143,156,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
+            }
+          if(MENSAJE[8]==1 && MENSAJE[9]==1){
+            Fl=1;
+            LCD_Sprite(143,156,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
+            LANCE++;
+            }
+          if(MENSAJE[8]==0 && MENSAJE[9]==1){
+            LCD_Sprite(143,156,35,44,lance_shooting_down,1,0,Fl,0);
+            }
+          if(MENSAJE[8]==0 && MENSAJE[9]==0){
+            LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+            }
+          if(MENSAJE[8]==1 && MENSAJE[9]==0){
+            Fl=1;
+            if(MENSAJE[6]==1){
+               LCD_Sprite(143,156,35,44,lance_shooting,2,1,Fl,0);
+              }
+            else{
+              LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+            }
+            LANCE++;
+            }
+          break;
+        case 2:
+        if(MENSAJE[8]==0 && MENSAJE[9]==0){
+            if(MENSAJE[6]==1){
+               LCD_Sprite(143,156,35,44,lance_shooting,2,1,Fl,0);
+              }
+            else{
+              LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+            }
+          }
+          if(MENSAJE[8]==1 && MENSAJE[9]==1){
+              LCD_Sprite(143,156,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
+            }
+            if(MENSAJE[8]==0 && MENSAJE[9]==1){
+              LCD_Sprite(143,156,35,44,lance_shooting_down,1,0,Fl,0);
+            }
+          if(MENSAJE[8]==1 && MENSAJE[9]==2){
+              LCD_Sprite(143,156,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
+          }
+           if(MENSAJE[8]==2 && MENSAJE[9]==2){
+            Fl=0;
+            LCD_Sprite(143,156,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
+            LANCE=0;
+            }
+            if(MENSAJE[8]==0 && MENSAJE[9]==2){
+              LCD_Sprite(143,156,35,44,lance_upward_shooting,2,0,Fl,0);
+            }
+            if(MENSAJE[8]==0 && MENSAJE[9]==0){
+              LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+            }
+          if(MENSAJE[8]==2 && MENSAJE[9]==1){
+            Fl=0;
+            LCD_Sprite(143,156,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
+            LANCE=0;
+          }
+          if(MENSAJE[8]==2 && MENSAJE[9]==0){
+            Fl=0;
+            if(MENSAJE[6]==1){
+               LCD_Sprite(143,156,35,44,lance_shooting,2,1,Fl,0);
+              }
+            else{
+              LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+            }
+            LANCE=0;
+          }
+          break;
+      }
+  return;
+}
+//********************************************************************SOLDADOS******************************************************************
+void SOLDADOL(void){
+  switch (SOLDADO){
+    if(XSL>=0 && XSL<=143){
+    case 0:
+      animSOLD = (XSL/5)%7;
+      LCD_Sprite(XSL,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL-1, 56, 44, 0x00);
+      XSL=XSL+5;
+      SOLDADO++;
+      break;
+    case 1:
+      animSOLD = (XSL/5)%7;
+      LCD_Sprite(XSL,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL-1, 56, 44, 0x00);
+      XSL=XSL+5;
+      SOLDADO++;
+      break;
+    case 2:
+      animSOLD = (XSL/5)%7;
+      LCD_Sprite(XSL,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL-1, 56, 44, 0x00);
+      XSL=XSL+5;
+      SOLDADO++;
+      break;
+    case 3:
+      animSOLD = (XSL/5)%7;
+      LCD_Sprite(XSL,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL-1, 56, 44, 0x00);
+      XSL=XSL+5;
+      SOLDADO++;
+      break;
+    case 4:
+      animSOLD = (XSL/5)%7;
+      LCD_Sprite(XSL,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL-1, 56, 44, 0x00);
+      XSL=XSL+5;
+      SOLDADO++;
+      break;
+    case 5:
+      animSOLD = (XSL/5)%7;
+      LCD_Sprite(XSL,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL-1, 56, 44, 0x00);
+      XSL=XSL+5;
+      SOLDADO++;
+      break;
+    case 6:
+      animSOLD = (XSL/5)%7;
+      LCD_Sprite(XSL,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL-1, 56, 44, 0x00);
+      XSL=XSL+5;
+      SOLDADO++;
+      break;
+    case 7:
+      animSOLD = (XSL/5)%7;
+      LCD_Sprite(XSL,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL-1, 56, 44, 0x00);
+      XSL=XSL+5;
+      SOLDADO=0;
+      break;
+    return;
+  }
+  if(XSL>143){
+    
+  }
+}
+}
+void SOLDADOL2(void){
+  switch (SOLDADO2){
+    case 0:
+      animSOLD = (XSL2/5)%7;
+      LCD_Sprite(XSL2,56,35,44,soldier,7,animSOLD,1,0);
+      V_line(XSL2-1, 56, 44, 0x00);
+      XSL2=XSL2+5;
+      SOLDADO2++;
+      break;
+    case 1:
+      animSOLD = (XSL2/5)%7;
+      LCD_Sprite(XSL2,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL2-1, 56, 44, 0x00);
+      XSL2=XSL2+5;
+      SOLDADO2++;
+      break;
+    case 2:
+      animSOLD = (XSL2/5)%7;
+      LCD_Sprite(XSL2,56,35,44,soldier,7,animSOLD,1,0);
+      V_line(XSL2-1, 56, 44, 0x00);
+      XSL2=XSL2+5;
+      SOLDADO2++;
+      break;
+    case 3:
+      animSOLD = (XSL2/5)%7;
+      LCD_Sprite(XSL2,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL2-1, 56, 44, 0x00);
+      XSL2=XSL2+5;
+      SOLDADO2++;
+      break;
+    case 4:
+      animSOLD = (XSL2/5)%7;
+      LCD_Sprite(XSL2,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL2-1, 56, 44, 0x00);
+      XSL2=XSL2+5;
+      SOLDADO2++;
+      break;
+    case 5:
+      animSOLD = (XSL2/5)%7;
+      LCD_Sprite(XSL2,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL2-1, 56, 44, 0x00);
+      XSL2=XSL2+5;
+      SOLDADO2++;
+      break;
+    case 6:
+      animSOLD = (XSL2/5)%7;
+      LCD_Sprite(XSL2,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL2-1, 56, 44, 0x00);
+      XSL2=XSL2+5;
+      SOLDADO2++;
+      break;
+    case 7:
+      animSOLD = (XSL2/5)%7;
+      LCD_Sprite(XSL2,56,35,44,soldier,7,animSOLD,1,0);
+      V_line( XSL2-1, 56, 44, 0x00);
+      XSL2=XSL2+5;
+      SOLDADO2=0;
+      break;
+  }
+}
+void SOLDADOR(void){
+  switch (SOLDADO3){
+    case 0:
+      animSOLD = (XSR/5)%7;
+      LCD_Sprite(XSR,56,35,44,soldier,7,animSOLD,0,0);
+      V_line(XSR+35, 56, 44, 0x00);
+      XSR=XSR-5;
+      SOLDADO3++;
+      break;
+    case 1:
+      animSOLD = (XSR/5)%7;
+      LCD_Sprite(XSR,56,35,44,soldier,7,animSOLD,0,0);
+      V_line(XSR+35, 56, 44, 0x00);
+      XSR=XSR-5;
+      SOLDADO3++;
+      break;
+    case 2:
+      animSOLD = (XSR/5)%7;
+      LCD_Sprite(XSR,56,35,44,soldier,7,animSOLD,0,0);
+      V_line(XSR+35, 56, 44, 0x00);
+      XSR=XSR-5;
+      SOLDADO3++;
+      break;
+    case 3:
+      animSOLD = (XSR/5)%7;
+      LCD_Sprite(XSR,56,35,44,soldier,7,animSOLD,0,0);
+      V_line(XSR+35, 56, 44, 0x00);
+      XSR=XSR-5;
+      SOLDADO3++;
+      break;
+    case 4:
+      animSOLD = (XSR/5)%7;
+      LCD_Sprite(XSR,56,35,44,soldier,7,animSOLD,0,0);
+      V_line(XSR+35, 56, 44, 0x00);
+      XSR=XSR-5;
+      SOLDADO3++;
+      break;
+    case 5:
+      animSOLD = (XSR/5)%7;
+      LCD_Sprite(XSR,56,35,44,soldier,7,animSOLD,0,0);
+      V_line( XSR+35, 56, 44, 0x00);
+      XSR=XSR-5;
+      SOLDADO3++;
+      break;
+    case 6:
+      animSOLD = (XSR/5)%7;
+      LCD_Sprite(XSR,56,35,44,soldier,7,animSOLD,0,0);
+      V_line( XSL2+35, 56, 44, 0x00);
+      XSR=XSR-5;
+      SOLDADO3++;
+      break;
+    case 7:
+      animSOLD = (XSR/5)%7;
+      LCD_Sprite(XSR,56,35,44,soldier,7,animSOLD,0,0);
+      V_line( XSR+35, 56, 44, 0x00);
+      XSR=XSR-5;
+      SOLDADO3=0;
+      break;
+  }
+}
+//********************************************************************ARAÑAS******************************************************************
+void ARANAL(void){
+  switch (ARANA1){
+    case 0:
+      animARA = (XAL1/5)%4;
+      LCD_Sprite(XAL1,56,41,44,spider,4,animARA,1,0);
+      V_line(XAL1-1, 56, 44, 0x00);
+      V_line(XAL1-2, 56, 44, 0x00);
+      V_line(XAL1-3, 56, 44, 0x00);
+      V_line(XAL1-4, 56, 44, 0x00);
+      XAL1=XAL1+5;
+      ARANA1++;
+      break;
+    case 1:
+      animARA = (XAL1/5)%4;
+      LCD_Sprite(XAL1,56,41,44,spider,4,animARA,1,0);
+      V_line(XAL1-1, 56, 44, 0x00);
+      V_line(XAL1-2, 56, 44, 0x00);
+      V_line(XAL1-3, 56, 44, 0x00);
+      V_line(XAL1-4, 56, 44, 0x00);
+      XAL1=XAL1+5;
+      ARANA1++;
+      break;
+    case 2:
+      animARA = (XAL1/5)%4;
+      LCD_Sprite(XAL1,56,41,44,spider,4,animARA,1,0);
+      V_line(XAL1-1, 56, 44, 0x00);
+      V_line(XAL1-2, 56, 44, 0x00);
+      V_line(XAL1-3, 56, 44, 0x00);
+      V_line(XAL1-4, 56, 44, 0x00);
+      XAL1=XAL1+5;
+      ARANA1++;
+      break;
+    case 3:
+      animARA = (XAL1/5)%4;
+      LCD_Sprite(XAL1,56,41,44,spider,4,animARA,1,0);
+      V_line(XAL1-1, 56, 44, 0x00);
+      V_line(XAL1-2, 56, 44, 0x00);
+      V_line(XAL1-3, 56, 44, 0x00);
+      V_line(XAL1-4, 56, 44, 0x00);
+      XAL1=XAL1+5;
+      ARANA1++;
+      break;
+    case 4:
+      animARA = (XAL1/5)%4;
+      LCD_Sprite(XAL1,56,41,44,spider,4,animARA,1,0);
+      V_line(XAL1-1, 56, 44, 0x00);
+      V_line(XAL1-2, 56, 44, 0x00);
+      V_line(XAL1-3, 56, 44, 0x00);
+      V_line(XAL1-4, 56, 44, 0x00);
+      XAL1=XAL1+5;
+      ARANA1=0;
+      break;
+  }
+}
+void ARANAR(void){
+  switch (ARANA2){
+    case 0:
+      animARA = (XAR1/5)%4;
+      LCD_Sprite(XAR1,56,41,44,spider,4,animARA,0,0);
+      V_line(XAR1+42, 56, 44, 0x00);
+      V_line(XAR1+43, 56, 44, 0x00);
+      V_line(XAR1+44, 56, 44, 0x00);
+      V_line(XAR1+45, 56, 44, 0x00);
+      V_line(XAR1+46, 56, 44, 0x00);
+      XAR1=XAR1-5;
+      ARANA2++;
+      break;
+    case 1:
+      animARA = (XAR1/5)%4;
+      LCD_Sprite(XAR1,56,41,44,spider,4,animARA,0,0);
+      V_line(XAR1+42, 56, 44, 0x00);
+      V_line(XAR1+43, 56, 44, 0x00);
+      V_line(XAR1+44, 56, 44, 0x00);
+      V_line(XAR1+45, 56, 44, 0x00);
+      V_line(XAR1+46, 56, 44, 0x00);
+      XAR1=XAR1-5;
+      ARANA2++;
+      break;
+    case 2:
+      animARA = (XAR1/5)%4;
+      LCD_Sprite(XAR1,56,41,44,spider,4,animARA,0,0);
+      V_line(XAR1+42, 56, 44, 0x00);
+      V_line(XAR1+43, 56, 44, 0x00);
+      V_line(XAR1+44, 56, 44, 0x00);
+      V_line(XAR1+45, 56, 44, 0x00);
+      V_line(XAR1+46, 56, 44, 0x00);
+      XAR1=XAR1-5;
+      ARANA2++;
+      break;
+    case 3:
+      animARA = (XAR1/5)%4;
+      LCD_Sprite(XAR1,56,41,44,spider,4,animARA,0,0);
+      V_line(XAR1+42, 56, 44, 0x00);
+      V_line(XAR1+43, 56, 44, 0x00);
+      V_line(XAR1+44, 56, 44, 0x00);
+      V_line(XAR1+45, 56, 44, 0x00);
+      V_line(XAR1+46, 56, 44, 0x00);
+      XAR1=XAR1-5;
+      ARANA2++;
+      break;
+    case 4:
+      animARA = (XAR1/5)%4;
+      LCD_Sprite(XAR1,56,41,44,spider,4,animARA,0,0);
+      V_line(XAR1+42, 56, 44, 0x00);
+      V_line(XAR1+43, 56, 44, 0x00);
+      V_line(XAR1+44, 56, 44, 0x00);
+      V_line(XAR1+45, 56, 44, 0x00);
+      V_line(XAR1+46, 56, 44, 0x00);
+      XAR1=XAR1-5;
+      ARANA2=0;
+      break;
+  }
+}
+//********************************************************************JEFE******************************************************************
+void BOSS_LEFT(void){
+  switch (BOSSL){
+    case 0:
+      animBOSS = (XBL/10)%2;
+      LCD_Sprite(XBL,56,57,60,boss,2,animBOSS,0,0);
+      V_line(XBL-1, 56, 60, 0x00);
+      V_line(XBL-2, 56, 60, 0x00);
+      V_line(XBL-3, 56, 60, 0x00);
+      V_line(XBL-4, 56, 60, 0x00);
+      V_line(XBL-5, 56, 60, 0x00);
+      V_line(XBL-6, 56, 60, 0x00);
+      XBL=XBL+5;
+      BOSSL++;
+      break;
+    case 1:
+      animBOSS = (XBL/10)%2;
+      LCD_Sprite(XBL,56,57,60,boss,2,animBOSS,0,0);
+      V_line(XBL-1, 56, 60, 0x00);
+      V_line(XBL-2, 56, 60, 0x00);
+      V_line(XBL-3, 56, 60, 0x00);
+      V_line(XBL-4, 56, 60, 0x00);
+      V_line(XBL-5, 56, 60, 0x00);
+      V_line(XBL-6, 56, 60, 0x00);
+      XBL=XBL+5;
+      BOSSL++;
+      break;
+    case 2:
+      animBOSS = (XBL/10)%2;
+      LCD_Sprite(XBL,56,57,60,boss,2,animBOSS,0,0);
+      V_line(XBL-1, 56, 60, 0x00);
+      V_line(XBL-2, 56, 60, 0x00);
+      V_line(XBL-3, 56, 60, 0x00);
+      V_line(XBL-4, 56, 60, 0x00);
+      V_line(XBL-5, 56, 60, 0x00);
+      V_line(XBL-6, 56, 60, 0x00);
+      XBL=XBL+5;
+      BOSSL=0;
+      break;
+  }
+}
+void BOSS_RIGHT(void){
+  switch (BOSSR){
+    case 0:
+      animBOSS = (XBR/10)%4;
+      LCD_Sprite(XBR,56,57,60,boss,2,animBOSS,1,0);
+      V_line(XBR+58, 56, 60, 0x00);
+      V_line(XBR+59, 56, 60, 0x00);
+      V_line(XBR+60, 56, 60, 0x00);
+      V_line(XBR+61, 56, 60, 0x00);
+      V_line(XBR+62, 56, 60, 0x00);
+      V_line(XBR+63, 56, 60, 0x00);
+      XBR=XBR-5;
+      BOSSR++;
+      break;
+    case 1:
+      animBOSS = (XBR/10)%4;
+      LCD_Sprite(XBR,56,57,60,boss,2,animBOSS,1,0);
+      V_line(XBR+58, 56, 60, 0x00);
+      V_line(XBR+59, 56, 60, 0x00);
+      V_line(XBR+60, 56, 60, 0x00);
+      V_line(XBR+61, 56, 60, 0x00);
+      V_line(XBR+62, 56, 60, 0x00);
+      V_line(XBR+63, 56, 60, 0x00);
+      XBR=XBR-5;
+      BOSSR++;
+      break;
+    case 2:
+      animBOSS = (XBR/10)%4;
+      LCD_Sprite(XBR,56,57,60,boss,2,animBOSS,1,0);
+      V_line(XBR+58, 56, 60, 0x00);
+      V_line(XBR+59, 56, 60, 0x00);
+      V_line(XBR+60, 56, 60, 0x00);
+      V_line(XBR+61, 56, 60, 0x00);
+      V_line(XBR+62, 56, 60, 0x00);
+      V_line(XBR+63, 56, 60, 0x00);
+      XBR=XBR-5;
+      BOSSR=0;
+      break;
+  }
+}
+void BALAL(void){
+  switch (BALA){
+    case 0:
+    animBULLET =(XBAL/5)%1;
+      LCD_Sprite(XBAL,71,3,3,bullet,1,animBULLET,0,0);
+       V_line(XBAL+4, 71, 3, 0x00);
+       V_line(XBAL+5, 71, 3, 0x00);
+       V_line(XBAL+6, 71, 3, 0x00);
+       V_line(XBAL+7, 71, 3, 0x00);
+       V_line(XBAL+8, 71, 3, 0x00);
+      XBAL=XBAL-5;
+      break;
   }
 }
