@@ -110,11 +110,18 @@ int XBL=0;
 int BOSSR=0;
 int XBR=260;
 
-//BALA IZQUIERDA=DERECHA
+//BALA DERECHA-AIRZUIERDA
 int animBULLET;
 int BALA=0;
 int XBAL=143;
 int N=0;
+
+//CONTADOR DE ENEMIGOS
+int EN1=0;
+
+//VIDA DE PERSONAGES
+int LIFEB=3;
+int LIFEL=3;
 //int anim;
 //int anim2;
 //int anim3;
@@ -249,13 +256,21 @@ void loop() {
         //SOLDADOL();
         //SOLDADOL2();
         //SOLDADOR();
-        if(XAL1>=0 && XAL1<=110){
-          ARANAL();
-          if((XAL1+41)==XBAL){
-            
-          }
+        if(XAL1==105 && LIFEB!=0){
+          LIFEB--;
+          XAL1=0;
+          EN1++;
+          
         }
-        else{
+        if(XAL1>=0 && XAL1<=110 &&(XAL1+41)<=XBAL && EN1==0){
+          ARANAL();
+        }
+       if((XAL1+41)>=XBAL && N==1){
+          FillRect(0,56,143,44,0x00);
+          EN1++;
+          N=0;
+          XAL1=0;
+          XBAL=143;
         }
         if(N==1 && XBAL>=0 &&XBAL<=143){
           BALAL();
@@ -302,6 +317,7 @@ void loop() {
     V_line( x + 41, 150, 44, 0x00);
   }*/
   }
+  Serial.println(LIFEB);
   MENSAJE[0]=0;
   MENSAJE[1]=0;
   MENSAJE[6]=0;
@@ -702,7 +718,7 @@ void MANDOS(void){
   
   if(Xvalue>=3000){
     MENSAJE[4]=2;
-    Serial.println(Xvalue);
+    //Serial.println(Xvalue);
   }
   if(Xvalue<=1500){
     MENSAJE[4]=1;
@@ -758,10 +774,10 @@ void MANDOS(void){
   if(Yvalue2>1500 && Yvalue2<3000){
     MENSAJE[9]=0;
   }
-  for(BIT=0;BIT<=9;BIT++){
+  /*for(BIT=0;BIT<=9;BIT++){
     Serial.print(MENSAJE[BIT]);
-  }
-  Serial.println("");
+  }*/
+  //Serial.println("");
 }
 void INICIO(void){
   if(MENSAJE[2]==0 && MENSAJE[3]==0 && SET==0){
