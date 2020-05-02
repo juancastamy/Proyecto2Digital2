@@ -110,15 +110,38 @@ int XBL=0;
 int BOSSR=0;
 int XBR=260;
 
-//BALA DERECHA-AIRZUIERDA
+//BALA BILL DERECHA-AIRZUIERDA
 int animBULLET;
 int BALA=0;
 int XBAL=143;
 int N=0;
 
+//BALA BILL IRQUIERDA-DERECHA
+int BALA2=0;
+int XBAL2=187;
+int N2=0;
+
+//BALA BILL DERECHA-AIRZUIERDA
+int BALA3=0;
+int XBAB=143;
+int N3=0;
+
+//BALA BILL IRQUIERDA-DERECHA
+int BALA4=0;
+int XBAB2=187;
+int N4=0;
+
 //CONTADOR DE ENEMIGOS
 int EN1=0;
 
+//VARIABLES MUERTE BILL
+int animDEADB=0;
+int XDB=143;
+int DEADB=0;
+
+//VARIABLES MUERTE LANCE
+int DEADL = 0;
+int XDL = 143;
 //VIDA DE PERSONAGES
 int LIFEB=3;
 int LIFEL=3;
@@ -170,9 +193,11 @@ extern uint8_t lance_shooting_down[];
 extern uint8_t lance_upward_shooting[];
 extern uint8_t lance_upward_shooting_with_angle[];
 extern uint8_t lance_downward_shooting_with_angle[];
+extern uint8_t lives [];
 void MANDOS(void);
 void INICIO(void);
-void MOVIMIENTO(void);
+void MOVIMIENTOB(void);
+void MOVIMINTOL(void);
 //SOLDADOS LEFT
 void SOLDADOL(void);
 void SOLDADOL2(void);
@@ -186,8 +211,18 @@ void ARANAR(void);
 void BOSS_LEFT(void);
 //BOSS RIGHT
 void BOSS_RIGHT(void);
-//BALA
+//BALA BILL
 void BALAL(void);
+void BALAR(void);
+void BALALL(void);
+void BALARL(void);
+//VIDAS BILL
+void VIDASB(void);
+//VIDAS LANCE
+void VIDASL(void);
+//MUERTE BILL
+void MUERTEB (void);
+void MUERTEL(void);
 //***************************************************************************************************************************************
 // Inicialización
 //***************************************************************************************************************************************
@@ -249,23 +284,23 @@ void loop() {
       INICIO();
   }
   if(SET==1){
+    VIDASB();
+    VIDASL();
       FillRect(0,100,320,30,0xC67B);
       FillRect(0,200,320,30,0xC67B);
-        MOVIMIENTO();
-
-        //SOLDADOL();
-        //SOLDADOL2();
-        //SOLDADOR();
-        if(XAL1==105 && LIFEB!=0){
+//****************************************************BILL*************************************************************************        
+        if(LIFEB!=0){
+          MOVIMIENTOB();
+        if(XAL1==110 && LIFEB!=0){
+          FillRect(0,56,143,44,0x00);
           LIFEB--;
           XAL1=0;
           EN1++;
-          
         }
-        if(XAL1>=0 && XAL1<=110 &&(XAL1+41)<=XBAL && EN1==0){
+        if(XAL1>=0 && XAL1<=110 && EN1==0){
           ARANAL();
         }
-       if((XAL1+41)>=XBAL && N==1){
+       if((XAL1+30)>=XBAL && N==1){
           FillRect(0,56,143,44,0x00);
           EN1++;
           N=0;
@@ -279,6 +314,30 @@ void loop() {
           N=0;
           XBAL=143;
         }
+        if(N2==1 && XBAL2>=187 && XBAL2<=320){
+          BALAR();
+        }
+        else{
+          N2=0;
+          XBAL2=187;
+        }
+        if(N3==1 && XBAB>=0 && XBAB<=143){
+          BALALL();
+        }
+        else{
+          N3=0;
+          XBAB=143;
+        }
+        if(N4==1 && XBAB2>=187 && XBAB2<=320){
+          BALARL();
+        }
+        else{
+          N4=0;
+          XBAB2=187;
+        }
+}
+}
+        
 
         //ARANAR();
         //BOSS_LEFT();
@@ -316,8 +375,8 @@ void loop() {
     LCD_Sprite(x,150,41,44,spider,4,anim3,0,0);
     V_line( x + 41, 150, 44, 0x00);
   }*/
-  }
-  Serial.println(LIFEB);
+  
+ // Serial.println(LIFEB);
   MENSAJE[0]=0;
   MENSAJE[1]=0;
   MENSAJE[6]=0;
@@ -801,7 +860,7 @@ void INICIO(void){
     }
   }
 }
-void MOVIMIENTO(void){
+void MOVIMIENTOB(void){
   switch (BILL){
         case 0:
           if(MENSAJE[4]==0 && MENSAJE[5]==0){
@@ -813,6 +872,7 @@ void MOVIMIENTO(void){
           if(MENSAJE[4]==0 && MENSAJE[5]==0){
           if(MENSAJE[0]==1){
               LCD_Sprite(143,56,35,44,bill_shooting,2,1,Bl,0);
+              N2=1;
             }
             else{
               LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
@@ -879,6 +939,8 @@ void MOVIMIENTO(void){
           }
           break;
       }
+}
+void MOVIMINTOL(void){
       switch (LANCE){
         case 0:
           if(MENSAJE[8]==0){
@@ -890,6 +952,7 @@ void MOVIMIENTO(void){
         if(MENSAJE[8]==0 && MENSAJE[9]==0){
             if(MENSAJE[6]==1){
                LCD_Sprite(143,156,35,44,lance_shooting,2,1,Fl,0);
+               N3=1;
               }
             else{
               LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
@@ -934,7 +997,8 @@ void MOVIMIENTO(void){
         case 2:
         if(MENSAJE[8]==0 && MENSAJE[9]==0){
             if(MENSAJE[6]==1){
-               LCD_Sprite(143,156,35,44,lance_shooting,2,1,Fl,0);
+              N4=1;
+              LCD_Sprite(143,156,35,44,lance_shooting,2,1,Fl,0);
               }
             else{
               LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
@@ -979,6 +1043,76 @@ void MOVIMIENTO(void){
       }
   return;
 }
+void MUERTEB (void){
+  switch(DEADB){
+    if(LIFEB==0){
+      case 0:
+        LCD_Sprite(143,56,35,44,bill_dying,8,0,0,0);
+        DEADB++;
+        break;
+      case 1:
+        LCD_Sprite(143,56,35,44,bill_dying,8,3,0,0);
+        XDB=XDB+5;
+        DEADB++;
+        break;
+      case 2:
+        LCD_Sprite(143,56,35,44,bill_dying,8,4,0,0);
+        XDB=XDB+5;
+        DEADB++;
+        break;
+      case 3:
+        LCD_Sprite(143,56,35,44,bill_dying,8,5,0,0);
+        XDB=XDB+5;
+        DEADB++;
+        break;
+      case 4:
+        LCD_Sprite(143,56,35,44,bill_dying,8,6,0,0);
+        XDB=XDB+5;
+        DEADB++;
+        break;
+      case 5:
+        LCD_Sprite(143,56,35,44,bill_dying,8,7,0,0);
+        XDB=XDB+5;
+        DEADB++;
+        break;
+    }
+  }
+}
+/*void MUERTEL (void){
+  switch(DEADL){
+    if(LIFEL==0){
+      case 0:
+        LCD_Sprite(143,156,35,44,lance_dying,8,0,0,0);
+        DEADL++;
+        break;
+      case 1:
+        LCD_Sprite(143,156,35,44,lance_dying,8,3,0,0);
+        XDL=XDL+5;
+        DEADL++;
+        break;
+      case 2:
+        LCD_Sprite(143,156,35,44,lance_dying,8,4,0,0);
+        XDL=XDL+5;
+        DEADL++;
+        break;
+      case 3:
+        LCD_Sprite(143,156,35,44,lance_dying,8,5,0,0);
+        XDL=XDL+5;
+        DEADL++;
+        break;
+      case 4:
+        LCD_Sprite(143,156,35,44,lance_dying,8,6,0,0);
+        XDL=XDL+5;
+        DEADL++;
+        break;
+      case 5:
+        LCD_Sprite(143,156,35,44,lance_dying,8,7,0,0);
+        XDL=XDL+5;
+        DEADL++;
+        break;
+    }
+  }
+}*/
 //********************************************************************SOLDADOS******************************************************************
 void SOLDADOL(void){
   switch (SOLDADO){
@@ -1106,6 +1240,7 @@ void SOLDADOL2(void){
       break;
   }
 }
+//************************************************************************************SOLDADO*************************************************************
 void SOLDADOR(void){
   switch (SOLDADO3){
     case 0:
@@ -1361,6 +1496,7 @@ void BOSS_RIGHT(void){
       break;
   }
 }
+//****************************************************************FUNCION DISPARO************************************************************************************
 void BALAL(void){
   switch (BALA){
     case 0:
@@ -1375,3 +1511,88 @@ void BALAL(void){
       break;
   }
 }
+void BALAR (void){
+  switch (BALA2){
+    case 0:
+      animBULLET =(XBAL2/5)%1;
+      LCD_Sprite(XBAL2,71,3,3,bullet,1,animBULLET,0,0);
+       V_line(XBAL2-1, 71, 3, 0x00);
+       V_line(XBAL2-2, 71, 3, 0x00);
+       V_line(XBAL2-3, 71, 3, 0x00);
+       V_line(XBAL2-4, 71, 3, 0x00);
+       V_line(XBAL2-5, 71, 3, 0x00);
+      XBAL2=XBAL2+5;
+      break;
+  }
+}
+//*******************************************************************FUNCION BALA LANCE******************************************************************************
+void BALALL(void){
+  switch (BALA3){
+    case 0:
+    animBULLET =(XBAB/5)%1;
+      LCD_Sprite(XBAB,71,3,3,bullet,1,animBULLET,0,0);
+       V_line(XBAB+4, 71, 3, 0x00);
+       V_line(XBAB+5, 71, 3, 0x00);
+       V_line(XBAB+6, 71, 3, 0x00);
+       V_line(XBAB+7, 71, 3, 0x00);
+       V_line(XBAB+8, 71, 3, 0x00);
+      XBAB=XBAB-5;
+      break;
+  }
+}
+void BALARL (void){
+  switch (BALA4){
+    case 0:
+      animBULLET =(XBAB2/5)%1;
+      LCD_Sprite(XBAB2,71,3,3,bullet,1,animBULLET,0,0);
+       V_line(XBAB2-1, 71, 3, 0x00);
+       V_line(XBAB2-2, 71, 3, 0x00);
+       V_line(XBAB2-3, 71, 3, 0x00);
+       V_line(XBAB2-4, 71, 3, 0x00);
+       V_line(XBAB2-5, 71, 3, 0x00);
+      XBAB2=XBAB2+5;
+      break;
+  }
+}
+
+//*******************************************************************FUNCIONES PARA VIDA*****************************************************************************
+void VIDASB(void){
+  if(LIFEB==3){
+    LCD_Sprite(2,2,8,16,lives,2,0,0,0);
+    LCD_Sprite(12,2,8,16,lives,2,0,0,0);
+    LCD_Sprite(22,2,8,16,lives,2,0,0,0);
+  }
+  if(LIFEB==2){
+    LCD_Sprite(2,2,8,16,lives,2,0,0,0);
+    LCD_Sprite(12,2,8,16,lives,2,0,0,0);
+    FillRect(22,2,8,16,0x00);
+  }
+  if(LIFEB==1){
+    LCD_Sprite(2,2,8,16,lives,2,0,0,0);
+    FillRect(12,2,8,16,0x00);
+  }
+  if(LIFEB==0){
+    FillRect(2,2,8,16,0x00);
+    MUERTEB();
+  }
+}
+/*void VIDASL(void){
+  if(LIFEL==3){
+    LCD_Sprite(310,2,8,16,lives,2,1,0,0);
+    LCD_Sprite(300,2,8,16,lives,2,1,0,0);
+    LCD_Sprite(290,2,8,16,lives,2,1,0,0);
+  }
+  if(LIFEL==2){
+    LCD_Sprite(290,2,8,16,lives,2,1,0,0);
+    LCD_Sprite(300,2,8,16,lives,2,1,0,0);
+    FillRect(310,2,8,16,0x00);
+  }
+  if(LIFEL==1){
+    LCD_Sprite(290,2,8,16,lives,2,1,0,0);
+    FillRect(300,2,8,16,0x00);
+  }
+  if(LIFEL==0){
+    FillRect(290,2,8,16,0x00);
+    MUERTEL ();
+  }
+}*/
