@@ -16,6 +16,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <TM4C123GH6PM.h>
+#include <Wire.h>
 #include "inc/hw_ints.h"
 #include "inc/hw_memmap.h"
 #include "inc/hw_types.h"
@@ -38,8 +39,8 @@
 #define LCD_RD PE_1
 #define X PE_4
 #define Y PE_5
-#define shot PA_7
-#define jump PA_6
+#define shot PD_7
+#define jump PD_6
 #define start PA_5
 //se define los puertos para el segundo jugador
 #define X2 PE_2
@@ -164,9 +165,8 @@ int LIFEL=3;
 //CONTADOR DE MUERTES 
 int KILL_BILL=0;
 int KILL_LANCE=0;
-//int anim;
-//int anim2;
-//int anim3;
+//VARIABLE PARA COMUNICACION
+int COM=0;
 //***************************************************************************************************************************************
 // Functions Prototypes
 //***************************************************************************************************************************************
@@ -272,29 +272,15 @@ void setup() {
   SET=0;
   SysCtlClockSet(SYSCTL_SYSDIV_2_5|SYSCTL_USE_PLL|SYSCTL_OSC_MAIN|SYSCTL_XTAL_16MHZ);
   Serial.begin(9600);
+  Wire.setModule(1);
+  Wire.begin();
   GPIOPadConfigSet(GPIO_PORTB_BASE, 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
   Serial.println("Inicio");
   LCD_Init();
   LCD_Clear(0x00);
   
-  //FillRect(0, 0, 194, 84, 0xff);
   LCD_Bitmap(108, 40, 105, 44, title_screen);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
   LCD_Bitmap(131, 98, 59, 45, characters);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
-  
-  
-  //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
-    
-  //LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
-  
-  /*
-  for(int x = 0; x <319; x++){
-    LCD_Bitmap(x, 52, 16, 16, tile2);
-    LCD_Bitmap(x, 68, 16, 16, tile);
-    
-    LCD_Bitmap(x, 207, 16, 16, tile);
-    LCD_Bitmap(x, 223, 16, 16, tile);
-    x += 15;
- }*/
   
 }
 //***************************************************************************************************************************************
@@ -310,7 +296,7 @@ void loop() {
   }
   switch(PAUSECASE){
     case 0:
-  
+    COM=0;
   if (SET==0){
       INICIO();
   }
@@ -1063,10 +1049,10 @@ void MANDOS(void){
   if(Yvalue2>1500 && Yvalue2<3000){
     MENSAJE[9]=0;
   }
-  for(BIT=0;BIT<=9;BIT++){
+  /*for(BIT=0;BIT<=9;BIT++){
     Serial.print(MENSAJE[BIT]);
   }
-  Serial.println("");
+  Serial.println("");*/
 }
 void INICIO(void){
   if(MENSAJE[2]==0 && MENSAJE[3]==0 && SET==0){
