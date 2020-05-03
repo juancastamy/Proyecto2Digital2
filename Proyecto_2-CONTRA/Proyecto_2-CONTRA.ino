@@ -110,17 +110,21 @@ int XAR2=279;
 //BOSS IZQUIERDA-DERECHA
 int animBOSS;
 int BOSSL=0;
-int XBL=0;
+int XBL=131;
 //BOSS DERECHA-IZQUIERDA
 int BOSSR=0;
-int XBR=260;
+int XBR=131;
+
+ int LIFEM=20;
 
 //POSICION DE BILL
 int XBILL=143;
 int YBILL=56;
+int YBLB=71;
 //POSICION DE LANCE
 int XLANCE=143;
-int YLANCE=56;
+int YLANCE=156;
+int YBLL=171;
 //BALA BILL DERECHA-AIRZUIERDA
 int animBULLET;
 int BALA=0;
@@ -158,8 +162,8 @@ int XDL = 143;
 int LIFEB=3;
 int LIFEL=3;
 //CONTADOR DE MUERTES 
-int KILL_BILL=0;
-int KILL_LANCE=0;
+int KILL_BILL=19;
+int KILL_LANCE=20;
 //int anim;
 //int anim2;
 //int anim3;
@@ -439,7 +443,7 @@ void loop() {
         }
       //*****************************************DERECHA - IZQUIERDA**********************************************************
         if(XSR2<=164 && LIFEL!=0){
-          FillRect(178,56,143,44,0x00);
+          FillRect(178,156,143,44,0x00);
           EN2=random(0,3);
           LIFEL--;
           XSR2=279;
@@ -505,7 +509,7 @@ void loop() {
           XAR2=279;
           XBAB2=176;
         }
-        if(N3==1 && XBAB2>=176 && XBAB2<=320){
+        if(N3==1 && XBAB2>=176 && XBAB2<=280){
           BALARL();
         }
         else{
@@ -517,42 +521,103 @@ void loop() {
         //BOSS_LEFT();
         //BOSS_RIGHT();
     }
-        
-        
-     
-//********************************************ANIMACIONES ENEMIGOS****************************************************************
-  /*for(int x = 0; x <320-57; x++){
-    delay(5);
-    int anim = (x/5)%2;
-    int anim2 = (x/5)%7;
-    int anim3 = (x/5)%4;
-    //LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
-    LCD_Sprite(x,20,57,60,boss,2,anim,0,0);
-    V_line( x -1, 20, 60, 0x00); 
-
-    LCD_Sprite(x,100,35,44,soldier,7,anim2,1,0);
-    V_line( x -1, 100, 44, 0x00);
-
-    LCD_Sprite(x,150,41,44,spider,4,anim3,1,0);
-    V_line( x -1, 150, 44, 0x00);
+   if(KILL_BILL>=20 & KILL_LANCE>=20){
+    SET++;
+    LCD_Clear(0x00);
+   }
   }
-  for(int x = 320-57; x >0; x--){
-    delay(5);
-    int anim = (x/5)%2;
-    int anim2 = (x/5)%7;
-    int anim3 = (x/5)%4;
-    LCD_Sprite(x,20,57,60,boss,2,anim,0,0);
-    V_line( x + 57, 20, 60, 0x00);
+  //***************************************************2PANTALLA**********************************************************
+  if(SET==2){
+    FillRect(0,210,320,30,0xC67B);
+    VIDASB();
+    VIDASL();
+    YBILL=166;
+    YLANCE=166;
+    XBILL=10;
+    XLANCE=275;
+    YBLB=181;
+    YBLL=181;
+    if(LIFEB!=0 && LIFEL!=0){
+      MOVIMIENTOB();
+      MOVIMIENTOL();
+      if(XBR==35 && LIFEB!=0){
+        FillRect(35,150,240,60,0X00);
+        EN3=random(0,1);
+        LIFEB--;
+        XBR=131;
+      }
+      if(XBR>=35 && XBR<=131 && EN3==0){
+        BOSS_RIGHT(); 
+      }
+      if(XBR<=XBAL2 && N2==1){
+        FillRect(35,150,240,60,0X00);
+        EN3=random(0,1);
+        LIFEM--;
+        N2=0;
+        XBAL2=30;
+        XBR=131;
+      }
+      if(N2==1 && XBAL2>=30 && XBAL2<=160){
+          BALAR();
+        }
+        else{
+          N2=0;
+          XBAL2=30;
+        }
 
-    LCD_Sprite(x,100,35,44,soldier,7,anim2,0,0);
-    V_line( x + 35, 100, 60, 0x00);
-
-    LCD_Sprite(x,150,41,44,spider,4,anim3,0,0);
-    V_line( x + 41, 150, 44, 0x00);
-  }*/
-    
+     if((XBL+57)==278 && LIFEL!=0){
+        FillRect(35,150,240,60,0X00);
+        EN3=random(0,1);
+        LIFEL--;
+        XBL=131;
+     }
+     if(XBL>=XBAB && N4==1){
+       FillRect(35,150,240,60,0X00);
+        EN3=random(0,1);
+        LIFEM--;
+        N4=0;
+        XBAB=280;
+        XBL=131;
+     }
+     if(XBL>=133 && XBL<=278 && EN3==1){
+        BOSS_LEFT(); 
+      }
+      if(N4==1 && XBAB>=160 &&XBAB<=280){
+          BALALL();
+        }
+        else{
+          N4=0;
+          XBAB=280;
+        }
+      /*
+       * if(XAR2==164 && LIFEL!=0){
+          FillRect(178,156,143,44,0x00);
+          EN2=random(0,3);
+          LIFEL--;
+          XAR2=279;
+        }
+        if(XAR2>=164 && XAR2<=279 && EN2==3){
+          ARANAR2();
+        }
+        if(XAR2<=XBAB2 && N3==1){
+          FillRect(178,156,142,44,0x00);
+          EN2=random(0,3);
+          KILL_LANCE++;
+          N3=0;
+          XAR2=279;
+          XBAB2=176;
+        }
+        if(N3==1 && XBAB2>=176 && XBAB2<=280){
+          BALARL();
+        }
+        else{
+          N3=0;
+          XBAB2=176;
+        }
+       */
+    }
+  }
   
-  }
  // Serial.println(LIFEB);
   MENSAJE[0]=0;
   MENSAJE[1]=0;
@@ -1042,41 +1107,41 @@ void MOVIMIENTOB(void){
   switch (BILL){
         case 0:
           if(MENSAJE[4]==0 && MENSAJE[5]==0){
-              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+              LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,0,Bl,0);
             BILL++;
           }
           break;
         case 1:
           if(MENSAJE[4]==0 && MENSAJE[5]==0){
           if(MENSAJE[0]==1){
-              LCD_Sprite(143,56,35,44,bill_shooting,2,1,Bl,0);
+              LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,1,Bl,0);
               N2=1;
             }
             else{
-              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+              LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,0,Bl,0);
             }
           }
           if(MENSAJE[4]==2 && MENSAJE[5]==1){
-            LCD_Sprite(143,56,35,44,bill_downward_shooting_with_angle,3,0,Bl,0);
+            LCD_Sprite(XBILL,YBILL,35,44,bill_downward_shooting_with_angle,3,0,Bl,0);
             }
           if(MENSAJE[4]==1 && MENSAJE[5]==1){
             Bl=1;
-            LCD_Sprite(143,56,35,44,bill_shooting_down,1,0,Bl,0);
+            LCD_Sprite(XBILL,YBILL,35,44,bill_shooting_down,1,0,Bl,0);
             BILL++;
             }
           if(MENSAJE[4]==0 && MENSAJE[5]==1){
-            LCD_Sprite(143,56,35,44,bill_shooting_down,1,0,Bl,0);
+            LCD_Sprite(XBILL,YBILL,35,44,bill_shooting_down,1,0,Bl,0);
             }
           if(MENSAJE[4]==0 && MENSAJE[5]==0){
-            LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+            LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,0,Bl,0);
             }
           if(MENSAJE[4]==1 && MENSAJE[5]==0){
             Bl=1;
             if(MENSAJE[0]==1){
-              LCD_Sprite(143,56,35,44,bill_shooting,2,1,Bl,0);
+              LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,1,Bl,0);
             }
             else{
-              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+              LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,0,Bl,0);
             }
             BILL++;
           }
@@ -1084,34 +1149,34 @@ void MOVIMIENTOB(void){
         case 2:
           if(MENSAJE[4]==0 && MENSAJE[5]==0){
             if(MENSAJE[0]==1){
-               LCD_Sprite(143,56,35,44,bill_shooting,2,1,Bl,0);
+               LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,1,Bl,0);
                N=1;
               }
             else{
-              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+              LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,0,Bl,0);
             }
           }
           if(MENSAJE[4]==1 && MENSAJE[5]==1){
-              LCD_Sprite(143,56,35,44,bill_downward_shooting_with_angle,3,0,Bl,0);
+              LCD_Sprite(XBILL,YBILL,35,44,bill_downward_shooting_with_angle,3,0,Bl,0);
             }
             if(MENSAJE[4]==0 && MENSAJE[5]==1){
-              LCD_Sprite(143,56,35,44,bill_shooting_down,1,0,Bl,0);
+              LCD_Sprite(XBILL,YBILL,35,44,bill_shooting_down,1,0,Bl,0);
             }
             if(MENSAJE[4]==0 && MENSAJE[5]==0){
-              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+              LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,0,Bl,0);
             }
           if(MENSAJE[4]==2 && MENSAJE[5]==1){
             Bl=0;
-            LCD_Sprite(143,56,35,44,bill_downward_shooting_with_angle,3,0,Bl,0);
+            LCD_Sprite(XBILL,YBILL,35,44,bill_downward_shooting_with_angle,3,0,Bl,0);
             BILL=0;
             }
           if(MENSAJE[4]==2 && MENSAJE[5]==0){
             Bl=0;
             if(MENSAJE[0]==1){
-              LCD_Sprite(143,56,35,44,bill_shooting,2,1,Bl,0);
+              LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,1,Bl,0);
             }
             else{
-              LCD_Sprite(143,56,35,44,bill_shooting,2,0,Bl,0);
+              LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,0,Bl,0);
             }
             BILL=0;
           }
@@ -1122,52 +1187,52 @@ void MOVIMIENTOL(void){
       switch (LANCE){
         case 0:
           if(MENSAJE[8]==0){
-            LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+            LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting,2,0,Fl,0);
             LANCE++;
           }
           break;
         case 1:
         if(MENSAJE[8]==0 && MENSAJE[9]==0){
             if(MENSAJE[6]==1){
-               LCD_Sprite(143,156,35,44,lance_shooting,2,1,Fl,0);
+               LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting,2,1,Fl,0);
                N3=1;
               }
             else{
-              LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+              LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting,2,0,Fl,0);
             }
           }
           if(MENSAJE[8]==2 && MENSAJE[9]==2){
-            LCD_Sprite(143,156,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
+            LCD_Sprite(XLANCE,YLANCE,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
             }
           if(MENSAJE[8]==1 && MENSAJE[9]==2){
             Fl=1;
-            LCD_Sprite(143,156,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
+            LCD_Sprite(XLANCE,YLANCE,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
             LANCE++;
             }
           if(MENSAJE[8]==0 && MENSAJE[9]==2){
-            LCD_Sprite(143,156,35,44,lance_upward_shooting,2,0,Fl,0);
+            LCD_Sprite(XLANCE,YLANCE,35,44,lance_upward_shooting,2,0,Fl,0);
             }
           if(MENSAJE[8]==2 && MENSAJE[9]==1){
-            LCD_Sprite(143,156,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
+            LCD_Sprite(XLANCE,YLANCE,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
             }
           if(MENSAJE[8]==1 && MENSAJE[9]==1){
             Fl=1;
-            LCD_Sprite(143,156,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
+            LCD_Sprite(XLANCE,YLANCE,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
             LANCE++;
             }
           if(MENSAJE[8]==0 && MENSAJE[9]==1){
-            LCD_Sprite(143,156,35,44,lance_shooting_down,1,0,Fl,0);
+            LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting_down,1,0,Fl,0);
             }
           if(MENSAJE[8]==0 && MENSAJE[9]==0){
-            LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+            LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting,2,0,Fl,0);
             }
           if(MENSAJE[8]==1 && MENSAJE[9]==0){
             Fl=1;
             if(MENSAJE[6]==1){
-               LCD_Sprite(143,156,35,44,lance_shooting,2,1,Fl,0);
+               LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting,2,1,Fl,0);
               }
             else{
-              LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+              LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting,2,0,Fl,0);
             }
             LANCE++;
             }
@@ -1176,44 +1241,44 @@ void MOVIMIENTOL(void){
         if(MENSAJE[8]==0 && MENSAJE[9]==0){
             if(MENSAJE[6]==1){
               N4=1;
-              LCD_Sprite(143,156,35,44,lance_shooting,2,1,Fl,0);
+              LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting,2,1,Fl,0);
               }
             else{
-              LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+              LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting,2,0,Fl,0);
             }
           }
           if(MENSAJE[8]==1 && MENSAJE[9]==1){
-              LCD_Sprite(143,156,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
+              LCD_Sprite(XLANCE,YLANCE,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
             }
             if(MENSAJE[8]==0 && MENSAJE[9]==1){
-              LCD_Sprite(143,156,35,44,lance_shooting_down,1,0,Fl,0);
+              LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting_down,1,0,Fl,0);
             }
           if(MENSAJE[8]==1 && MENSAJE[9]==2){
-              LCD_Sprite(143,156,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
+              LCD_Sprite(XLANCE,YLANCE,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
           }
            if(MENSAJE[8]==2 && MENSAJE[9]==2){
             Fl=0;
-            LCD_Sprite(143,156,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
+            LCD_Sprite(XLANCE,YLANCE,35,44,lance_upward_shooting_with_angle,3,0,Fl,0);
             LANCE=0;
             }
             if(MENSAJE[8]==0 && MENSAJE[9]==2){
-              LCD_Sprite(143,156,35,44,lance_upward_shooting,2,0,Fl,0);
+              LCD_Sprite(XLANCE,YLANCE,35,44,lance_upward_shooting,2,0,Fl,0);
             }
             if(MENSAJE[8]==0 && MENSAJE[9]==0){
-              LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+              LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting,2,0,Fl,0);
             }
           if(MENSAJE[8]==2 && MENSAJE[9]==1){
             Fl=0;
-            LCD_Sprite(143,156,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
+            LCD_Sprite(XLANCE,YLANCE,35,44,lance_downward_shooting_with_angle,3,0,Fl,0);
             LANCE=0;
           }
           if(MENSAJE[8]==2 && MENSAJE[9]==0){
             Fl=0;
             if(MENSAJE[6]==1){
-               LCD_Sprite(143,156,35,44,lance_shooting,2,1,Fl,0);
+               LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting,2,1,Fl,0);
               }
             else{
-              LCD_Sprite(143,156,35,44,lance_shooting,2,0,Fl,0);
+              LCD_Sprite(XLANCE,YLANCE,35,44,lance_shooting,2,0,Fl,0);
             }
             LANCE=0;
           }
@@ -1767,37 +1832,37 @@ void BOSS_LEFT(void){
   switch (BOSSL){
     case 0:
       animBOSS = (XBL/10)%2;
-      LCD_Sprite(XBL,56,57,60,boss,2,animBOSS,0,0);
-      V_line(XBL-1, 56, 60, 0x00);
-      V_line(XBL-2, 56, 60, 0x00);
-      V_line(XBL-3, 56, 60, 0x00);
-      V_line(XBL-4, 56, 60, 0x00);
-      V_line(XBL-5, 56, 60, 0x00);
-      V_line(XBL-6, 56, 60, 0x00);
+      LCD_Sprite(XBL,250,57,60,boss,2,animBOSS,0,0);
+      V_line(XBL-1, 250, 60, 0x00);
+      V_line(XBL-2, 250, 60, 0x00);
+      V_line(XBL-3, 250, 60, 0x00);
+      V_line(XBL-4, 250, 60, 0x00);
+      V_line(XBL-5, 250, 60, 0x00);
+      V_line(XBL-6, 250, 60, 0x00);
       XBL=XBL+5;
       BOSSL++;
       break;
     case 1:
       animBOSS = (XBL/10)%2;
-      LCD_Sprite(XBL,56,57,60,boss,2,animBOSS,0,0);
-      V_line(XBL-1, 56, 60, 0x00);
-      V_line(XBL-2, 56, 60, 0x00);
-      V_line(XBL-3, 56, 60, 0x00);
-      V_line(XBL-4, 56, 60, 0x00);
-      V_line(XBL-5, 56, 60, 0x00);
-      V_line(XBL-6, 56, 60, 0x00);
+      LCD_Sprite(XBL,250,57,60,boss,2,animBOSS,0,0);
+      V_line(XBL-1, 250, 60, 0x00);
+      V_line(XBL-2, 250, 60, 0x00);
+      V_line(XBL-3, 250, 60, 0x00);
+      V_line(XBL-4, 250, 60, 0x00);
+      V_line(XBL-5, 250, 60, 0x00);
+      V_line(XBL-6, 250, 60, 0x00);
       XBL=XBL+5;
       BOSSL++;
       break;
     case 2:
       animBOSS = (XBL/10)%2;
-      LCD_Sprite(XBL,56,57,60,boss,2,animBOSS,0,0);
-      V_line(XBL-1, 56, 60, 0x00);
-      V_line(XBL-2, 56, 60, 0x00);
-      V_line(XBL-3, 56, 60, 0x00);
-      V_line(XBL-4, 56, 60, 0x00);
-      V_line(XBL-5, 56, 60, 0x00);
-      V_line(XBL-6, 56, 60, 0x00);
+      LCD_Sprite(XBL,250,57,60,boss,2,animBOSS,0,0);
+      V_line(XBL-1, 250, 60, 0x00);
+      V_line(XBL-2, 250, 60, 0x00);
+      V_line(XBL-3, 250, 60, 0x00);
+      V_line(XBL-4, 250, 60, 0x00);
+      V_line(XBL-5, 250, 60, 0x00);
+      V_line(XBL-6, 250, 60, 0x00);
       XBL=XBL+5;
       BOSSL=0;
       break;
@@ -1806,38 +1871,38 @@ void BOSS_LEFT(void){
 void BOSS_RIGHT(void){
   switch (BOSSR){
     case 0:
-      animBOSS = (XBR/10)%4;
-      LCD_Sprite(XBR,56,57,60,boss,2,animBOSS,1,0);
-      V_line(XBR+58, 56, 60, 0x00);
-      V_line(XBR+59, 56, 60, 0x00);
-      V_line(XBR+60, 56, 60, 0x00);
-      V_line(XBR+61, 56, 60, 0x00);
-      V_line(XBR+62, 56, 60, 0x00);
-      V_line(XBR+63, 56, 60, 0x00);
+      animBOSS = (XBR/10)%2;
+      LCD_Sprite(XBR,250,57,60,boss,2,animBOSS,1,0);
+      V_line(XBR+58, 250, 60, 0x00);
+      V_line(XBR+59, 250, 60, 0x00);
+      V_line(XBR+60, 250, 60, 0x00);
+      V_line(XBR+61, 250, 60, 0x00);
+      V_line(XBR+62, 250, 60, 0x00);
+      V_line(XBR+63, 250, 60, 0x00);
       XBR=XBR-5;
       BOSSR++;
       break;
     case 1:
-      animBOSS = (XBR/10)%4;
-      LCD_Sprite(XBR,56,57,60,boss,2,animBOSS,1,0);
-      V_line(XBR+58, 56, 60, 0x00);
-      V_line(XBR+59, 56, 60, 0x00);
-      V_line(XBR+60, 56, 60, 0x00);
-      V_line(XBR+61, 56, 60, 0x00);
-      V_line(XBR+62, 56, 60, 0x00);
-      V_line(XBR+63, 56, 60, 0x00);
+      animBOSS = (XBR/10)%2;
+      LCD_Sprite(XBR,250,57,60,boss,2,animBOSS,1,0);
+      V_line(XBR+58, 250, 60, 0x00);
+      V_line(XBR+59, 250, 60, 0x00);
+      V_line(XBR+60, 250, 60, 0x00);
+      V_line(XBR+61, 250, 60, 0x00);
+      V_line(XBR+62, 250, 60, 0x00);
+      V_line(XBR+63, 250, 60, 0x00);
       XBR=XBR-5;
       BOSSR++;
       break;
     case 2:
-      animBOSS = (XBR/10)%4;
-      LCD_Sprite(XBR,56,57,60,boss,2,animBOSS,1,0);
-      V_line(XBR+58, 56, 60, 0x00);
-      V_line(XBR+59, 56, 60, 0x00);
-      V_line(XBR+60, 56, 60, 0x00);
-      V_line(XBR+61, 56, 60, 0x00);
-      V_line(XBR+62, 56, 60, 0x00);
-      V_line(XBR+63, 56, 60, 0x00);
+      animBOSS = (XBR/10)%2;
+      LCD_Sprite(XBR,250,57,60,boss,2,animBOSS,1,0);
+      V_line(XBR+58, 250, 60, 0x00);
+      V_line(XBR+59, 250, 60, 0x00);
+      V_line(XBR+60, 250, 60, 0x00);
+      V_line(XBR+61, 250, 60, 0x00);
+      V_line(XBR+62, 250, 60, 0x00);
+      V_line(XBR+63, 250, 60, 0x00);
       XBR=XBR-5;
       BOSSR=0;
       break;
@@ -1848,12 +1913,12 @@ void BALAL(void){
   switch (BALA){
     case 0:
     animBULLET =(XBAL/5)%1;
-      LCD_Sprite(XBAL,71,3,3,bullet,1,animBULLET,0,0);
-       V_line(XBAL+4, 71, 3, 0x00);
-       V_line(XBAL+5, 71, 3, 0x00);
-       V_line(XBAL+6, 71, 3, 0x00);
-       V_line(XBAL+7, 71, 3, 0x00);
-       V_line(XBAL+8, 71, 3, 0x00);
+      LCD_Sprite(XBAL,YBLB,3,3,bullet,1,animBULLET,0,0);
+       V_line(XBAL+4, YBLB, 3, 0x00);
+       V_line(XBAL+5, YBLB, 3, 0x00);
+       V_line(XBAL+6, YBLB, 3, 0x00);
+       V_line(XBAL+7, YBLB, 3, 0x00);
+       V_line(XBAL+8, YBLB, 3, 0x00);
       XBAL=XBAL-5;
       break;
   }
@@ -1862,12 +1927,12 @@ void BALAR (void){
   switch (BALA2){
     case 0:
       animBULLET =(XBAL2/5)%1;
-      LCD_Sprite(XBAL2,71,3,3,bullet,1,animBULLET,0,0);
-       V_line(XBAL2-1, 71, 3, 0x00);
-       V_line(XBAL2-2, 71, 3, 0x00);
-       V_line(XBAL2-3, 71, 3, 0x00);
-       V_line(XBAL2-4, 71, 3, 0x00);
-       V_line(XBAL2-5, 71, 3, 0x00);
+      LCD_Sprite(XBAL2,YBLB,3,3,bullet,1,animBULLET,0,0);
+       V_line(XBAL2-1, YBLB, 3, 0x00);
+       V_line(XBAL2-2, YBLB, 3, 0x00);
+       V_line(XBAL2-3, YBLB, 3, 0x00);
+       V_line(XBAL2-4, YBLB, 3, 0x00);
+       V_line(XBAL2-5, YBLB, 3, 0x00);
       XBAL2=XBAL2+5;
       break;
   }
@@ -1877,12 +1942,12 @@ void BALALL(void){
   switch (BALA3){
     case 0:
     animBULLET =(XBAB/5)%1;
-      LCD_Sprite(XBAB,171,3,3,bullet,1,animBULLET,0,0);
-       V_line(XBAB+4, 171, 3, 0x00);
-       V_line(XBAB+5, 171, 3, 0x00);
-       V_line(XBAB+6, 171, 3, 0x00);
-       V_line(XBAB+7, 171, 3, 0x00);
-       V_line(XBAB+8, 171, 3, 0x00);
+      LCD_Sprite(XBAB,YBLL,3,3,bullet,1,animBULLET,0,0);
+       V_line(XBAB+4, YBLL, 3, 0x00);
+       V_line(XBAB+5, YBLL, 3, 0x00);
+       V_line(XBAB+6, YBLL, 3, 0x00);
+       V_line(XBAB+7, YBLL, 3, 0x00);
+       V_line(XBAB+8, YBLL, 3, 0x00);
       XBAB=XBAB-5;
       break;
   }
@@ -1891,12 +1956,12 @@ void BALARL (void){
   switch (BALA4){
     case 0:
       animBULLET =(XBAB2/5)%1;
-      LCD_Sprite(XBAB2,171,3,3,bullet,1,animBULLET,0,0);
-       V_line(XBAB2-1, 171, 3, 0x00);
-       V_line(XBAB2-2, 171, 3, 0x00);
-       V_line(XBAB2-3, 171, 3, 0x00);
-       V_line(XBAB2-4, 171, 3, 0x00);
-       V_line(XBAB2-5, 171, 3, 0x00);
+      LCD_Sprite(XBAB2,YBLL,3,3,bullet,1,animBULLET,0,0);
+       V_line(XBAB2-1, YBLL, 3, 0x00);
+       V_line(XBAB2-2, YBLL, 3, 0x00);
+       V_line(XBAB2-3, YBLL, 3, 0x00);
+       V_line(XBAB2-4, YBLL, 3, 0x00);
+       V_line(XBAB2-5, YBLL, 3, 0x00);
       XBAB2=XBAB2+5;
       break;
   }
