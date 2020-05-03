@@ -56,7 +56,7 @@ int j;
 int Xvalue;
 int Yvalue;
 int START;
-
+int PAUSECASE=0;
 //varianles de disparo y salto segundo jugado
 int s2;
 int j2;
@@ -147,9 +147,9 @@ int XBAB2=176;
 int N4=0;
 
 //CONTADOR DE ENEMIGOS
-int EN1=random(0,3);
-int EN2=random(0,3);
-int EN3=random(0,1);
+int EN1=random(0,4);
+int EN2=random(0,4);
+int EN3=random(0,2);
 //VARIABLES MUERTE BILL
 int animDEADB=0;
 int XDB=143;
@@ -162,8 +162,8 @@ int XDL = 143;
 int LIFEB=3;
 int LIFEL=3;
 //CONTADOR DE MUERTES 
-int KILL_BILL=19;
-int KILL_LANCE=20;
+int KILL_BILL=0;
+int KILL_LANCE=0;
 //int anim;
 //int anim2;
 //int anim3;
@@ -302,6 +302,15 @@ void setup() {
 //***************************************************************************************************************************************
 void loop() {
   MANDOS();
+  if(MENSAJE[2]==0 && MENSAJE[3]==0){
+    PAUSECASE=0;
+  }
+  if(MENSAJE[2]==1 || MENSAJE[3]==1){
+    PAUSECASE=1;
+  }
+  switch(PAUSECASE){
+    case 0:
+  
   if (SET==0){
       INICIO();
   }
@@ -317,7 +326,7 @@ void loop() {
         FillRect(0,56,143,44,0x00);
         LIFEB--;
         XSL=0;
-        EN1=random(0,3);
+        EN1=random(0,4);
       }
       if(XSL>=0 && XSL<=120 && EN1==0){
         SOLDADOL();
@@ -325,7 +334,7 @@ void loop() {
       if((XSL+20)>=XBAL && N==1){
           FillRect(0,56,143,44,0x00);
           KILL_BILL++;
-          EN1=random(0,3);
+          EN1=random(0,4);
           N=0;
           XSL=0;
           XBAL=143;
@@ -340,7 +349,7 @@ void loop() {
         //*****************************************DERECHA - IZQUIERDA**********************************************************
         if(XSR<=164 && LIFEB!=0){
           FillRect(178,56,143,44,0x00);
-          EN1=random(0,3);
+          EN1=random(0,4);
           LIFEB--;
           XSR=279;
         }
@@ -349,7 +358,7 @@ void loop() {
         }
         if(XSR<=XBAL2 && N2==1){
           FillRect(178,56,142,44,0x00);
-          EN1=random(0,3);
+          EN1=random(0,4);
           KILL_BILL++;
           N2=0;
           XSR=279;
@@ -367,14 +376,14 @@ void loop() {
         FillRect(0,56,143,44,0x00);
         LIFEB--;
         XAL1=0;
-        EN1=random(0,3);
+        EN1=random(0,4);
       }
       if(XAL1>=0 && XAL1<=110 && EN1==2){
         ARANAL();
       }
       if((XAL1+30)>=XBAL && N==1){
           FillRect(0,56,143,44,0x00);
-          EN1=random(0,3);
+          EN1=random(0,4);
           KILL_BILL++;
           N=0;
           XAL1=0;
@@ -390,7 +399,7 @@ void loop() {
         //*****************************************DERECHA - IZQUIERDA**********************************************************
         if(XAR1==164 && LIFEB!=0){
           FillRect(178,56,143,44,0x00);
-          EN1=random(0,3);
+          EN1=random(0,4);
           LIFEB--;
           XAR1=279;
         }
@@ -399,7 +408,7 @@ void loop() {
         }
         if(XAR1<=XBAL2 && N2==1){
           FillRect(178,56,142,44,0x00);
-          EN1=random(0,3);
+          EN1=random(0,4);
           KILL_BILL++;
           N2=0;
           XAR1=279;
@@ -421,7 +430,7 @@ void loop() {
         FillRect(0,156,143,44,0x00);
         LIFEL--;
         XSL2=0;
-        EN2=random(0,3);
+        EN2=random(0,4);
       }
       if(XSL2>=0 && XSL2<=120 && EN2==0){
         SOLDADOL2();
@@ -429,7 +438,7 @@ void loop() {
       if((XSL2+20)>=XBAB && N4==1){
           FillRect(0,156,143,44,0x00);
           KILL_LANCE++;
-          EN2=random(0,3);
+          EN2=random(0,4);
           N4=0;
           XSL2=0;
           XBAB=143;
@@ -444,7 +453,7 @@ void loop() {
       //*****************************************DERECHA - IZQUIERDA**********************************************************
         if(XSR2<=164 && LIFEL!=0){
           FillRect(178,156,143,44,0x00);
-          EN2=random(0,3);
+          EN2=random(0,4);
           LIFEL--;
           XSR2=279;
         }
@@ -453,7 +462,7 @@ void loop() {
         }
         if(XSR2<=XBAB2 && N3==1){
           FillRect(178,156,142,44,0x00);
-          EN2=random(0,3);
+          EN2=random(0,4);
           KILL_LANCE++;
           N3=0;
           XSR2=279;
@@ -471,14 +480,14 @@ void loop() {
         FillRect(0,156,143,44,0x00);
         LIFEL--;
         XAL2=0;
-        EN2=random(0,3);
+        EN2=random(0,4);
       }
       if(XAL2>=0 && XAL2<=110 && EN2==2){
         ARANAL2();
       }
       if((XAL2+30)>=XBAB && N4==1){
           FillRect(0,156,143,44,0x00);
-          EN2=random(0,3);
+          EN2=random(0,4);
           KILL_LANCE++;
           N4=0;
           XAL2=0;
@@ -494,7 +503,7 @@ void loop() {
         //*****************************************DERECHA - IZQUIERDA**********************************************************
         if(XAR2==164 && LIFEL!=0){
           FillRect(178,156,143,44,0x00);
-          EN2=random(0,3);
+          EN2=random(0,4);
           LIFEL--;
           XAR2=279;
         }
@@ -503,7 +512,7 @@ void loop() {
         }
         if(XAR2<=XBAB2 && N3==1){
           FillRect(178,156,142,44,0x00);
-          EN2=random(0,3);
+          EN2=random(0,4);
           KILL_LANCE++;
           N3=0;
           XAR2=279;
@@ -521,7 +530,7 @@ void loop() {
         //BOSS_LEFT();
         //BOSS_RIGHT();
     }
-   if(KILL_BILL>=20 & KILL_LANCE>=20){
+   if(KILL_BILL>=10 & KILL_LANCE>=10){
     SET++;
     LCD_Clear(0x00);
    }
@@ -540,9 +549,9 @@ void loop() {
     if(LIFEB!=0 && LIFEL!=0){
       MOVIMIENTOB();
       MOVIMIENTOL();
-      if(XBR==35 && LIFEB!=0){
+      if(XBR==36 && LIFEB!=0){
         FillRect(35,150,240,60,0X00);
-        EN3=random(0,1);
+        EN3=random(0,2);
         LIFEB--;
         XBR=131;
       }
@@ -551,7 +560,7 @@ void loop() {
       }
       if(XBR<=XBAL2 && N2==1){
         FillRect(35,150,240,60,0X00);
-        EN3=random(0,1);
+        EN3=random(0,2);
         LIFEM--;
         N2=0;
         XBAL2=30;
@@ -567,19 +576,19 @@ void loop() {
 
      if((XBL+57)==278 && LIFEL!=0){
         FillRect(35,150,240,60,0X00);
-        EN3=random(0,1);
+        EN3=random(0,2);
         LIFEL--;
         XBL=131;
      }
-     if(XBL>=XBAB && N4==1){
-       FillRect(35,150,240,60,0X00);
-        EN3=random(0,1);
+     if((XBL+57)>=XBAB && N4==1){
+        FillRect(35,150,240,60,0X00);
+        EN3=random(0,2);
         LIFEM--;
         N4=0;
         XBAB=280;
         XBL=131;
      }
-     if(XBL>=133 && XBL<=278 && EN3==1){
+     if(XBL>=131 && XBL<=278 && EN3==1){
         BOSS_LEFT(); 
       }
       if(N4==1 && XBAB>=160 &&XBAB<=280){
@@ -589,32 +598,6 @@ void loop() {
           N4=0;
           XBAB=280;
         }
-      /*
-       * if(XAR2==164 && LIFEL!=0){
-          FillRect(178,156,143,44,0x00);
-          EN2=random(0,3);
-          LIFEL--;
-          XAR2=279;
-        }
-        if(XAR2>=164 && XAR2<=279 && EN2==3){
-          ARANAR2();
-        }
-        if(XAR2<=XBAB2 && N3==1){
-          FillRect(178,156,142,44,0x00);
-          EN2=random(0,3);
-          KILL_LANCE++;
-          N3=0;
-          XAR2=279;
-          XBAB2=176;
-        }
-        if(N3==1 && XBAB2>=176 && XBAB2<=280){
-          BALARL();
-        }
-        else{
-          N3=0;
-          XBAB2=176;
-        }
-       */
     }
   }
   
@@ -623,6 +606,10 @@ void loop() {
   MENSAJE[1]=0;
   MENSAJE[6]=0;
   MENSAJE[7]=0;
+  break;
+  case 1:
+    break;
+}
 }
 
 //***************************************************************************************************************************************
@@ -1076,10 +1063,10 @@ void MANDOS(void){
   if(Yvalue2>1500 && Yvalue2<3000){
     MENSAJE[9]=0;
   }
-  /*for(BIT=0;BIT<=9;BIT++){
+  for(BIT=0;BIT<=9;BIT++){
     Serial.print(MENSAJE[BIT]);
-  }*/
-  //Serial.println("");
+  }
+  Serial.println("");
 }
 void INICIO(void){
   if(MENSAJE[2]==0 && MENSAJE[3]==0 && SET==0){
@@ -1290,31 +1277,31 @@ void MUERTEB (void){
   switch(DEADB){
     if(LIFEB==0){
       case 0:
-        LCD_Sprite(143,56,35,44,bill_dying,8,0,0,0);
+        LCD_Sprite(XBILL,YBILL,35,44,bill_dying,8,0,0,0);
         DEADB++;
         break;
       case 1:
-        LCD_Sprite(143,56,35,44,bill_dying,8,3,0,0);
+        LCD_Sprite(XBILL,YBILL,35,44,bill_dying,8,3,0,0);
         XDB=XDB+5;
         DEADB++;
         break;
       case 2:
-        LCD_Sprite(143,56,35,44,bill_dying,8,4,0,0);
+        LCD_Sprite(XBILL,YBILL,35,44,bill_dying,8,4,0,0);
         XDB=XDB+5;
         DEADB++;
         break;
       case 3:
-        LCD_Sprite(143,56,35,44,bill_dying,8,5,0,0);
+        LCD_Sprite(XBILL,YBILL,35,44,bill_dying,8,5,0,0);
         XDB=XDB+5;
         DEADB++;
         break;
       case 4:
-        LCD_Sprite(143,56,35,44,bill_dying,8,6,0,0);
+        LCD_Sprite(XBILL,YBILL,35,44,bill_dying,8,6,0,0);
         XDB=XDB+5;
         DEADB++;
         break;
       case 5:
-        LCD_Sprite(143,56,35,44,bill_dying,8,7,0,0);
+        LCD_Sprite(XBILL,YBILL,35,44,bill_dying,8,7,0,0);
         XDB=XDB+5;
         DEADB++;
         break;
@@ -1325,31 +1312,31 @@ void MUERTEL (void){
   switch(DEADL){
     if(LIFEL==0){
       case 0:
-        LCD_Sprite(143,156,35,44,lance_dying,8,0,0,0);
+        LCD_Sprite(XLANCE,YLANCE,35,44,lance_dying,8,0,0,0);
         DEADL++;
         break;
       case 1:
-        LCD_Sprite(143,156,35,44,lance_dying,8,3,0,0);
+        LCD_Sprite(XLANCE,YLANCE,35,44,lance_dying,8,3,0,0);
         XDL=XDL+5;
         DEADL++;
         break;
       case 2:
-        LCD_Sprite(143,156,35,44,lance_dying,8,4,0,0);
+        LCD_Sprite(XLANCE,YLANCE,35,44,lance_dying,8,4,0,0);
         XDL=XDL+5;
         DEADL++;
         break;
       case 3:
-        LCD_Sprite(143,156,35,44,lance_dying,8,5,0,0);
+        LCD_Sprite(XLANCE,YLANCE,35,44,lance_dying,8,5,0,0);
         XDL=XDL+5;
         DEADL++;
         break;
       case 4:
-        LCD_Sprite(143,156,35,44,lance_dying,8,6,0,0);
+        LCD_Sprite(XLANCE,YLANCE,35,44,lance_dying,8,6,0,0);
         XDL=XDL+5;
         DEADL++;
         break;
       case 5:
-        LCD_Sprite(143,156,35,44,lance_dying,8,7,0,0);
+        LCD_Sprite(XLANCE,YLANCE,35,44,lance_dying,8,7,0,0);
         XDL=XDL+5;
         DEADL++;
         break;
@@ -1832,37 +1819,37 @@ void BOSS_LEFT(void){
   switch (BOSSL){
     case 0:
       animBOSS = (XBL/10)%2;
-      LCD_Sprite(XBL,250,57,60,boss,2,animBOSS,0,0);
-      V_line(XBL-1, 250, 60, 0x00);
-      V_line(XBL-2, 250, 60, 0x00);
-      V_line(XBL-3, 250, 60, 0x00);
-      V_line(XBL-4, 250, 60, 0x00);
-      V_line(XBL-5, 250, 60, 0x00);
-      V_line(XBL-6, 250, 60, 0x00);
+      LCD_Sprite(XBL,150,57,60,boss,2,animBOSS,0,0);
+      V_line(XBL-1, 150, 60, 0x00);
+      V_line(XBL-2, 150, 60, 0x00);
+      V_line(XBL-3, 150, 60, 0x00);
+      V_line(XBL-4, 150, 60, 0x00);
+      V_line(XBL-5, 150, 60, 0x00);
+      V_line(XBL-6, 150, 60, 0x00);
       XBL=XBL+5;
       BOSSL++;
       break;
     case 1:
       animBOSS = (XBL/10)%2;
-      LCD_Sprite(XBL,250,57,60,boss,2,animBOSS,0,0);
-      V_line(XBL-1, 250, 60, 0x00);
-      V_line(XBL-2, 250, 60, 0x00);
-      V_line(XBL-3, 250, 60, 0x00);
-      V_line(XBL-4, 250, 60, 0x00);
-      V_line(XBL-5, 250, 60, 0x00);
-      V_line(XBL-6, 250, 60, 0x00);
+      LCD_Sprite(XBL,150,57,60,boss,2,animBOSS,0,0);
+      V_line(XBL-1, 150, 60, 0x00);
+      V_line(XBL-2, 150, 60, 0x00);
+      V_line(XBL-3, 150, 60, 0x00);
+      V_line(XBL-4, 150, 60, 0x00);
+      V_line(XBL-5, 150, 60, 0x00);
+      V_line(XBL-6, 150, 60, 0x00);
       XBL=XBL+5;
       BOSSL++;
       break;
     case 2:
       animBOSS = (XBL/10)%2;
-      LCD_Sprite(XBL,250,57,60,boss,2,animBOSS,0,0);
-      V_line(XBL-1, 250, 60, 0x00);
-      V_line(XBL-2, 250, 60, 0x00);
-      V_line(XBL-3, 250, 60, 0x00);
-      V_line(XBL-4, 250, 60, 0x00);
-      V_line(XBL-5, 250, 60, 0x00);
-      V_line(XBL-6, 250, 60, 0x00);
+      LCD_Sprite(XBL,150,57,60,boss,2,animBOSS,0,0);
+      V_line(XBL-1, 150, 60, 0x00);
+      V_line(XBL-2, 150, 60, 0x00);
+      V_line(XBL-3, 150, 60, 0x00);
+      V_line(XBL-4, 150, 60, 0x00);
+      V_line(XBL-5, 150, 60, 0x00);
+      V_line(XBL-6, 150, 60, 0x00);
       XBL=XBL+5;
       BOSSL=0;
       break;
@@ -1872,37 +1859,37 @@ void BOSS_RIGHT(void){
   switch (BOSSR){
     case 0:
       animBOSS = (XBR/10)%2;
-      LCD_Sprite(XBR,250,57,60,boss,2,animBOSS,1,0);
-      V_line(XBR+58, 250, 60, 0x00);
-      V_line(XBR+59, 250, 60, 0x00);
-      V_line(XBR+60, 250, 60, 0x00);
-      V_line(XBR+61, 250, 60, 0x00);
-      V_line(XBR+62, 250, 60, 0x00);
-      V_line(XBR+63, 250, 60, 0x00);
+      LCD_Sprite(XBR,150,57,60,boss,2,animBOSS,1,0);
+      V_line(XBR+58, 150, 60, 0x00);
+      V_line(XBR+59, 150, 60, 0x00);
+      V_line(XBR+60, 150, 60, 0x00);
+      V_line(XBR+61, 150, 60, 0x00);
+      V_line(XBR+62, 150, 60, 0x00);
+      V_line(XBR+63, 150, 60, 0x00);
       XBR=XBR-5;
       BOSSR++;
       break;
     case 1:
       animBOSS = (XBR/10)%2;
-      LCD_Sprite(XBR,250,57,60,boss,2,animBOSS,1,0);
-      V_line(XBR+58, 250, 60, 0x00);
-      V_line(XBR+59, 250, 60, 0x00);
-      V_line(XBR+60, 250, 60, 0x00);
-      V_line(XBR+61, 250, 60, 0x00);
-      V_line(XBR+62, 250, 60, 0x00);
-      V_line(XBR+63, 250, 60, 0x00);
+      LCD_Sprite(XBR,150,57,60,boss,2,animBOSS,1,0);
+      V_line(XBR+58, 150, 60, 0x00);
+      V_line(XBR+59, 150, 60, 0x00);
+      V_line(XBR+60, 150, 60, 0x00);
+      V_line(XBR+61, 150, 60, 0x00);
+      V_line(XBR+62, 150, 60, 0x00);
+      V_line(XBR+63, 150, 60, 0x00);
       XBR=XBR-5;
       BOSSR++;
       break;
     case 2:
       animBOSS = (XBR/10)%2;
-      LCD_Sprite(XBR,250,57,60,boss,2,animBOSS,1,0);
-      V_line(XBR+58, 250, 60, 0x00);
-      V_line(XBR+59, 250, 60, 0x00);
-      V_line(XBR+60, 250, 60, 0x00);
-      V_line(XBR+61, 250, 60, 0x00);
-      V_line(XBR+62, 250, 60, 0x00);
-      V_line(XBR+63, 250, 60, 0x00);
+      LCD_Sprite(XBR,150,57,60,boss,2,animBOSS,1,0);
+      V_line(XBR+58, 150, 60, 0x00);
+      V_line(XBR+59, 150, 60, 0x00);
+      V_line(XBR+60, 150, 60, 0x00);
+      V_line(XBR+61, 150, 60, 0x00);
+      V_line(XBR+62, 150, 60, 0x00);
+      V_line(XBR+63, 150, 60, 0x00);
       XBR=XBR-5;
       BOSSR=0;
       break;
