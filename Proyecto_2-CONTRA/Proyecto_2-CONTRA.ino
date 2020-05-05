@@ -39,8 +39,8 @@
 #define LCD_RD PE_1
 #define X PE_4
 #define Y PE_5
-#define shot PD_7
-#define jump PD_6
+#define shot PA_7
+#define jump PA_6
 #define start PA_5
 //se define los puertos para el segundo jugador
 #define X2 PE_2
@@ -261,6 +261,10 @@ void setup() {
   pinMode(shot2,INPUT);
   pinMode(jump2,INPUT);
   pinMode(start2,INPUT); 
+//******************************************PINES PARA CONTROLAR MUSICA*****************************************************
+  pinMode(PC_7, OUTPUT);
+  pinMode(PD_6, OUTPUT);
+  pinMode(PD_7, OUTPUT);
   // put your setup code here, to run once:
   //variable para anti rebote
   ju=0;
@@ -275,8 +279,6 @@ void setup() {
   SET=0;
   SysCtlClockSet(SYSCTL_SYSDIV_2_5|SYSCTL_USE_PLL|SYSCTL_OSC_MAIN|SYSCTL_XTAL_16MHZ);
   Serial.begin(9600);
-  Wire.setModule(1);
-  Wire.begin();
   GPIOPadConfigSet(GPIO_PORTB_BASE, 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7, GPIO_STRENGTH_8MA, GPIO_PIN_TYPE_STD_WPU);
   Serial.println("Inicio");
   LCD_Init();
@@ -291,18 +293,42 @@ void setup() {
 //***************************************************************************************************************************************
 void loop() {
   MANDOS();
-  Wire.beginTransmission(1); // transmit to device #4
-  Wire.write(COM);              // sends one byte
-  Serial.println(COM);  
-  Wire.endTransmission(); 
+  Serial.println(COM);
   if(MENSAJE[2]==0 && MENSAJE[3]==0){
     PAUSECASE=0;
   }
   if(MENSAJE[2]==1 || MENSAJE[3]==1){
     PAUSECASE=1;
   }
+//***********************************************PINES PARA REPRODUCIR MUSICA**************************************************************
   if(LIFEL==0 && LIFEB==0){
     COM=3;
+  }
+  if(COM==0){
+    digitalWrite(PC_7, LOW);
+    digitalWrite(PD_6, LOW);
+    digitalWrite(PD_7, LOW);
+  }
+  if(COM==1){
+    digitalWrite(PC_7, HIGH);
+    digitalWrite(PD_6, LOW);
+    digitalWrite(PD_7, LOW);
+  }
+  if(COM==2){
+    digitalWrite(PC_7, LOW);
+    digitalWrite(PD_6, HIGH);
+    digitalWrite(PD_7, LOW);
+  }
+  if(COM==3){
+    digitalWrite(PC_7, HIGH);
+    digitalWrite(PD_6, HIGH);
+    digitalWrite(PD_7, LOW);
+  }
+  
+  if(COM==4){
+    digitalWrite(PC_7, LOW);
+    digitalWrite(PD_6, LOW);
+    digitalWrite(PD_7, HIGH);
   }
   switch(PAUSECASE){
     case 0:
@@ -311,6 +337,9 @@ void loop() {
         COM=0;
       }
       if(SET==1){
+        if(COM!=1){
+          COM=1;
+        }
         VIDASB();
         VIDASL();
         FillRect(0,100,320,30,0xC67B);
@@ -528,6 +557,9 @@ void loop() {
     }
 //***************************************************2PANTALLA**********************************************************
     if(SET==2){
+      if(COM!=1){
+          COM=1;
+        }
       FillRect(0,210,320,30,0xC67B);
       VIDASB();
       VIDASL();
@@ -595,48 +627,47 @@ void loop() {
       }
     }
     if (SET==3){
-        LCD_Bitmap(74, 100, 172, 100, ending);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
-        String textEND1 = "Congratulations";
-        LCD_Print(textEND1, 40, 50, 2, 0xffff, 0x00);
-        String textEND2 = "Soldier!!!";
-        LCD_Print(textEND2, 80, 75, 2, 0xffff, 0x00);
-        if (MENSAJE[1] || MENSAJE[7]){
-          LCD_Clear(0x00);
-          LCD_Bitmap(108, 40, 105, 44, title_screen);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
-          LCD_Bitmap(131, 98, 59, 45, characters);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
-          delay (1000);
-          SET = 0;
-          LIFEM=20;
-          KILL_BILL=0;
-          KILL_LANCE=0;
-          LIFEL=3;
-          LIFEB=3;
-          XBILL=143;
-          YBILL=56;
-          YBLB=71;
-//POSICION DE LANCE
-          XLANCE=143;
-          YLANCE=156;
-          YBLL=171;
+      COM=4;
+      LCD_Bitmap(74, 100, 172, 100, ending);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
+      String textEND1 = "Congratulations";
+      LCD_Print(textEND1, 40, 50, 2, 0xffff, 0x00);
+      String textEND2 = "Soldier!!!";
+      LCD_Print(textEND2, 80, 75, 2, 0xffff, 0x00);
+      if (MENSAJE[1] || MENSAJE[7]){
+        LCD_Clear(0x00);
+        LCD_Bitmap(108, 40, 105, 44, title_screen);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
+        LCD_Bitmap(131, 98, 59, 45, characters);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
+        delay (1000);
+        SET = 0;
+        LIFEM=20;
+        KILL_BILL=0;
+        KILL_LANCE=0;
+        LIFEL=3;
+        LIFEB=3;
+        XBILL=143;
+        YBILL=56;
+        YBLB=71;
+//POSISION DE LANCE
+        XLANCE=143;
+        YLANCE=156;
+        YBLL=171;
 //BALA BILL DERECHA-AIRZUIERDA
-          BALA=0;
-          XBAL=143;
-          N=0;
+        BALA=0;
+        XBAL=143;
+        N=0;
 
 //BALA BILL IRQUIERDA-DERECHA
-          BALA2=0;
-          XBAL2=176;
-          N2=0;
+        BALA2=0;
+        XBAL2=176;
+        N2=0;
 
 //BALA LANCE DERECHA-AIRZUIERDA
-          BALA3=0;
-          XBAB=143;
-          N3=0;
-
-//BALA LANCE IRQUIERDA-DERECHA
-          BALA4=0;
-          XBAB2=176;
-               
+        BALA3=0;
+        XBAB=143;
+        N3=0;
+        //BALA LANCE IRQUIERDA-DERECHA
+        BALA4=0;
+        XBAB2=176;
       }
     }
 // Serial.println(LIFEB);
@@ -1012,6 +1043,9 @@ void MANDOS(void){
       SET++;
       COM=1;
     }
+    if(COM==4){
+      COM=0;
+    }
     ju=0;
     }
 
@@ -1081,6 +1115,9 @@ void MANDOS(void){
       LCD_Clear(0x00);
       SET++;
       COM=1;
+    }
+    if(COM==4){
+      COM=0;
     }
     ju2=0;
   }
