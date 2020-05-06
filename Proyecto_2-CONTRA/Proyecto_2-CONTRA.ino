@@ -301,9 +301,10 @@ void loop() {
     PAUSECASE=1;
   }
 //***********************************************PINES PARA REPRODUCIR MUSICA**************************************************************
-  if(LIFEL==0 && LIFEB==0){
-    COM=3;
-  }
+  if(LIFEL==0 && LIFEB==0 && DEADL==6 && DEADB==6){
+    SET=4;
+    LCD_Clear(0x00);
+    }
   if(COM==0){
     digitalWrite(PC_7, LOW);
     digitalWrite(PD_6, LOW);
@@ -554,12 +555,18 @@ void loop() {
         SET++;
         LCD_Clear(0x00);
       }
+      if(KILL_BILL>=10 && LIFEL==0){
+        SET++;
+        LCD_Clear(0x00);
+      }
+      if(KILL_LANCE>=10 && LIFEB==0){
+        SET++;
+        LCD_Clear(0x00);
+      }
     }
 //***************************************************2PANTALLA**********************************************************
     if(SET==2){
-      if(COM!=1){
-          COM=1;
-        }
+      COM=1;
       FillRect(0,210,320,30,0xC67B);
       VIDASB();
       VIDASL();
@@ -572,15 +579,18 @@ void loop() {
       if(LIFEB!=0 && LIFEL!=0){
         MOVIMIENTOB();
         MOVIMIENTOL();
+//*********************************************SI GOLPEA A BILL************************************************************        
         if(XBR==36 && LIFEB!=0){
           FillRect(35,150,240,60,0X00);
           EN3=random(0,2);
           LIFEB--;
           XBR=131;
         }
+//******************************************************DIRECCION DE BILL***********************************************        
         if(XBR>=35 && XBR<=131 && EN3==0){
           BOSS_RIGHT(); 
         }
+//*******************************************************SI BILL LE DISPARA**********************************************
         if(XBR<=XBAL2 && N2==1){
           FillRect(35,150,240,60,0X00);
           EN3=random(0,2);
@@ -589,6 +599,7 @@ void loop() {
           XBAL2=30;
           XBR=131;
         }
+//*****************************************************DISPARO DE BILL*****************************************************        
         if(N2==1 && XBAL2>=30 && XBAL2<=160){
           BALAR();
         }
@@ -596,12 +607,14 @@ void loop() {
           N2=0;
           XBAL2=30;
         }
+//*********************************************SI GOLPEA A LANCE************************************************************          
         if((XBL+57)==278 && LIFEL!=0){
           FillRect(35,150,240,60,0X00);
           EN3=random(0,2);
           LIFEL--;
           XBL=131;
         }
+//*******************************************************SI LANCE LE DISPARA**********************************************
         if((XBL+57)>=XBAB && N4==1){
           FillRect(35,150,240,60,0X00);
           EN3=random(0,2);
@@ -610,9 +623,11 @@ void loop() {
           XBAB=280;
           XBL=131;
         }
+//*******************************************************SI BILL LE DISPARA**********************************************
         if(XBL>=131 && XBL<=278 && EN3==1){
           BOSS_LEFT(); 
         }
+//******************************************************DIRECCION DE LANCE***********************************************         
         if(N4==1 && XBAB>=160 &&XBAB<=280){
           BALALL();
         }
@@ -621,11 +636,82 @@ void loop() {
           XBAB=280;
         }
       }
+//**************************************************SI EL BOSS YA NO TIENE VIDA*****************************************
       if (LIFEM==0){
         SET++;
         LCD_Clear(0x00);
       }
+//***************************************************SI SOLO BILL LLEGA AL BOSS****************************************      
+      if(LIFEB!=0 && LIFEL==0){
+        MOVIMIENTOB();
+        EN3=0;
+        if(XBR==36 && LIFEB!=0){
+          FillRect(35,150,240,60,0X00);
+          EN3=0;
+          LIFEB--;
+          XBR=131;
+        }
+//******************************************************DIRECCION DE BILL***********************************************        
+        if(XBR>=35 && XBR<=131 && EN3==0){
+          BOSS_RIGHT(); 
+        }
+//*******************************************************SI BILL LE DISPARA**********************************************
+        if(XBR<=XBAL2 && N2==1){
+          FillRect(35,150,240,60,0X00);
+          EN3=0;
+          LIFEM--;
+          N2=0;
+          XBAL2=30;
+          XBR=131;
+        }
+//*****************************************************DISPARO DE BILL*****************************************************        
+        if(N2==1 && XBAL2>=30 && XBAL2<=160){
+          BALAR();
+        }
+        else{
+          N2=0;
+          XBAL2=30;
+        }
+//**************************************************SI EL BOSS YA NO TIENE VIDA*****************************************
+      if (LIFEM==0){
+        SET++;
+        LCD_Clear(0x00);
+      }
+      }
+//**************************************************SI SOLO LANCE LLEGA AL BOSS*****************************************
+      if(LIFEB==0 && LIFEL!=0){
+        MOVIMIENTOL();
+        EN3=1;
+        if((XBL+57)==278 && LIFEL!=0){
+          FillRect(35,150,240,60,0X00);
+          EN3=1;
+          LIFEL--;
+          XBL=131;
+        }
+//*******************************************************SI LANCE LE DISPARA**********************************************
+        if((XBL+57)>=XBAB && N4==1){
+          FillRect(35,150,240,60,0X00);
+          EN3=1;
+          LIFEM--;
+          N4=0;
+          XBAB=280;
+          XBL=131;
+        }
+//*******************************************************SI BILL LE DISPARA**********************************************
+        if(XBL>=131 && XBL<=278 && EN3==1){
+          BOSS_LEFT(); 
+        }
+//******************************************************DIRECCION DE LANCE***********************************************         
+        if(N4==1 && XBAB>=160 &&XBAB<=280){
+          BALALL();
+        }
+        else{
+          N4=0;
+          XBAB=280;
+        }
+      }
     }
+//*****************************************************PANTALLA DE JUEGO GANADO******************************************    
     if (SET==3){
       COM=4;
       LCD_Bitmap(74, 100, 172, 100, ending);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
@@ -655,12 +741,10 @@ void loop() {
         BALA=0;
         XBAL=143;
         N=0;
-
 //BALA BILL IRQUIERDA-DERECHA
         BALA2=0;
         XBAL2=176;
         N2=0;
-
 //BALA LANCE DERECHA-AIRZUIERDA
         BALA3=0;
         XBAB=143;
@@ -669,6 +753,47 @@ void loop() {
         BALA4=0;
         XBAB2=176;
       }
+    }
+    if(SET==4){
+      COM=3;
+      if(COM==3){
+      String textEND3 = "GameOver";
+      LCD_Print(textEND3, 100, 110, 2, 0xffff, 0x00);
+      if (MENSAJE[1] || MENSAJE[7]){
+        LCD_Clear(0x00);
+        LCD_Bitmap(108, 40, 105, 44, title_screen);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
+        LCD_Bitmap(131, 98, 59, 45, characters);//**ESTA LINEA DESCOMENTALA PARA PROBAR**
+        delay (1000);
+        SET = 0;
+        LIFEM=20;
+        KILL_BILL=0;
+        KILL_LANCE=0;
+        LIFEL=3;
+        LIFEB=3;
+        XBILL=143;
+        YBILL=56;
+        YBLB=71;
+//POSISION DE LANCE
+        XLANCE=143;
+        YLANCE=156;
+        YBLL=171;
+//BALA BILL DERECHA-AIRZUIERDA
+        BALA=0;
+        XBAL=143;
+        N=0;
+//BALA BILL IRQUIERDA-DERECHA
+        BALA2=0;
+        XBAL2=176;
+        N2=0;
+//BALA LANCE DERECHA-AIRZUIERDA
+        BALA3=0;
+        XBAB=143;
+        N3=0;
+        //BALA LANCE IRQUIERDA-DERECHA
+        BALA4=0;
+        XBAB2=176;
+      }
+    }
     }
 // Serial.println(LIFEB);
     MENSAJE[0]=0;
@@ -1185,6 +1310,17 @@ void MOVIMIENTOB(void){
               LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,0,Bl,0);
             }
           }
+          if(MENSAJE[4]==2 && MENSAJE[5]==2){
+            LCD_Sprite(XBILL,YBILL,35,44,bill_upward_shooting_with_angle,3,0,Bl,0);
+            }
+          if(MENSAJE[4]==1 && MENSAJE[5]==2){
+            Bl=1;
+            LCD_Sprite(XBILL,YBILL,35,44,bill_upward_shooting_with_angle,3,0,Bl,0);
+            BILL++;
+            }
+          if(MENSAJE[4]==0 && MENSAJE[5]==2){
+            LCD_Sprite(XBILL,YBILL,35,44,bill_upward_shooting,2,0,Bl,0);
+            }
           if(MENSAJE[4]==2 && MENSAJE[5]==1){
             LCD_Sprite(XBILL,YBILL,35,44,bill_downward_shooting_with_angle,3,0,Bl,0);
             }
@@ -1225,6 +1361,17 @@ void MOVIMIENTOB(void){
             }
             if(MENSAJE[4]==0 && MENSAJE[5]==1){
               LCD_Sprite(XBILL,YBILL,35,44,bill_shooting_down,1,0,Bl,0);
+            }
+            if(MENSAJE[4]==1 && MENSAJE[5]==2){
+              LCD_Sprite(XBILL,YBILL,35,44,bill_upward_shooting_with_angle,3,0,Bl,0);
+          }
+           if(MENSAJE[4]==2 && MENSAJE[5]==2){
+            Bl=0;
+            LCD_Sprite(XBILL,YBILL,35,44,bill_upward_shooting_with_angle,3,0,Bl,0);
+            BILL=0;
+            }
+            if(MENSAJE[4]==0 && MENSAJE[5]==2){
+              LCD_Sprite(XBILL,YBILL,35,44,bill_upward_shooting,2,0,Bl,0);
             }
             if(MENSAJE[4]==0 && MENSAJE[5]==0){
               LCD_Sprite(XBILL,YBILL,35,44,bill_shooting,2,0,Bl,0);
