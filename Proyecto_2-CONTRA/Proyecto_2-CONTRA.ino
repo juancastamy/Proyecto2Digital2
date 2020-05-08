@@ -85,7 +85,6 @@ int bl=0;
 int BILL=0;
 int LANCE=0;
 //SOLDADOS IZQUIERDA-DERECHA
-int animSOLD;
 int SOLDADO=0;
 int XSL=0;
 //****//
@@ -98,7 +97,6 @@ int SOLDADO4=0;
 int XSR2=285;
 
 //ARAÑAS IZQUIERDA-DERECHA
-int animARA;
 int ARANA1=0;
 int XAL1=0;
 int ARANA3=0;
@@ -109,7 +107,6 @@ int XAR1=279;
 int ARANA4=0;
 int XAR2=279;
 //BOSS IZQUIERDA-DERECHA
-int animBOSS;
 int BOSSL=0;
 int XBL=131;
 //BOSS DERECHA-IZQUIERDA
@@ -127,7 +124,6 @@ int XLANCE=143;
 int YLANCE=156;
 int YBLL=177;
 //BALA BILL DERECHA-AIRZUIERDA
-int animBULLET;
 int BALA=0;
 int XBAL=143;
 int N=0;
@@ -682,11 +678,6 @@ void loop() {
             N2=0;
             XBAL2=30;
           }
-  //**************************************************SI EL BOSS YA NO TIENE VIDA*****************************************
-        if (LIFEM==0){
-          SET++;
-          LCD_Clear(0x00);
-        }
         }
   //**************************************************SI SOLO LANCE LLEGA AL BOSS*****************************************
         if(LIFEB==0 && LIFEL!=0){
@@ -719,6 +710,11 @@ void loop() {
             N4=0;
             XBAB=280;
           }
+        }
+          //**************************************************SI EL BOSS YA NO TIENE VIDA*****************************************
+        if (LIFEM==0){
+          SET++;
+          LCD_Clear(0x00);
         }
       }
 //*****************************************************PANTALLA DE JUEGO GANADO******************************************    
@@ -1591,7 +1587,6 @@ void SOLDADOL(void){
       SOLDADO++;
       break;
     case 1:
-      animSOLD = (XSL/5)%7;
       LCD_Sprite(XSL,56,35,44,soldier,7,1,1,0);
       V_line( XSL-1, 56, 44, 0x00);
       XSL=XSL+7;
@@ -2262,8 +2257,7 @@ void BOSS_RIGHT(void){
 void BALAL(void){
   switch (BALA){
     case 0:
-    animBULLET =(XBAL/5)%1;
-      LCD_Sprite(XBAL,YBLB,3,3,bullet,1,animBULLET,0,0);
+      LCD_Sprite(XBAL,YBLB,3,3,bullet,1,0,0,0);
        V_line(XBAL+4, YBLB, 3, 0x00);
        V_line(XBAL+5, YBLB, 3, 0x00);
        V_line(XBAL+6, YBLB, 3, 0x00);
@@ -2276,8 +2270,7 @@ void BALAL(void){
 void BALAR (void){
   switch (BALA2){
     case 0:
-      animBULLET =(XBAL2/5)%1;
-      LCD_Sprite(XBAL2,YBLB,3,3,bullet,1,animBULLET,0,0);
+      LCD_Sprite(XBAL2,YBLB,3,3,bullet,1,0,0,0);
        V_line(XBAL2-1, YBLB, 3, 0x00);
        V_line(XBAL2-2, YBLB, 3, 0x00);
        V_line(XBAL2-3, YBLB, 3, 0x00);
@@ -2291,8 +2284,7 @@ void BALAR (void){
 void BALALL(void){
   switch (BALA3){
     case 0:
-    animBULLET =(XBAB/5)%1;
-      LCD_Sprite(XBAB,YBLL,3,3,bullet,1,animBULLET,0,0);
+      LCD_Sprite(XBAB,YBLL,3,3,bullet,1,0,0,0);
        V_line(XBAB+4, YBLL, 3, 0x00);
        V_line(XBAB+5, YBLL, 3, 0x00);
        V_line(XBAB+6, YBLL, 3, 0x00);
@@ -2305,8 +2297,7 @@ void BALALL(void){
 void BALARL (void){
   switch (BALA4){
     case 0:
-      animBULLET =(XBAB2/5)%1;
-      LCD_Sprite(XBAB2,YBLL,3,3,bullet,1,animBULLET,0,0);
+      LCD_Sprite(XBAB2,YBLL,3,3,bullet,1,0,0,0);
        V_line(XBAB2-1, YBLL, 3, 0x00);
        V_line(XBAB2-2, YBLL, 3, 0x00);
        V_line(XBAB2-3, YBLL, 3, 0x00);
