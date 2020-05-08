@@ -4,9 +4,7 @@
 #include <TMRpcm.h>
 #include <SPI.h>
 #include<pcmConfig.h>
-void receiveEvent(int howMany);
 TMRpcm tmrpcm;
-int COM;
 int INICIO;
 int CONTRA;
 int PAUSA;
@@ -22,25 +20,16 @@ void setup() {
   pinMode(4,INPUT);
   pinMode(5,INPUT);
   Serial.begin(9600);           // start serial for output
-  tmrpcm.speakerPin = 9;
- 
+  tmrpcm.speakerPin = 9;        //pin para bocina 
   
   if (!SD.begin(SD_ChipSelectPin)) {
   Serial.println("SD fail");
   return;
   }
-  tmrpcm.setVolume(6); 
+  tmrpcm.setVolume(6);        //volume de salida para bocina 
 }
 void loop() {
-  Serial.print(INICIO);
-  Serial.print("\t");
-  Serial.print(CONTRA);
-  Serial.print("\t");
-  Serial.print(PAUSA);
-  Serial.print("\t");
-  Serial.print(DEAD);
-  Serial.print("\t");
-  Serial.println(CLEAR);
+//******************************************************************MUSICA DE INICIO*****************************************************************
     if(digitalRead(3)==LOW && digitalRead(4)==LOW && digitalRead(5)==LOW && INICIO==0){
       INICIO++;
       tmrpcm.stopPlayback();
@@ -49,6 +38,7 @@ void loop() {
     if((digitalRead(3)!=LOW || digitalRead(4)!=LOW || digitalRead(5)!=LOW) && INICIO==1){
       INICIO=0;
     }
+//*****************************************************************MUSICA DEL MAPA DE CONTRA**********************************************************
     if(digitalRead(3)==HIGH && digitalRead(4)==LOW && digitalRead(5)==LOW && CONTRA==0){
       CONTRA++;
       tmrpcm.stopPlayback();
@@ -57,6 +47,7 @@ void loop() {
     if((digitalRead(3)!=HIGH || digitalRead(4)!=LOW || digitalRead(5)!=LOW) && CONTRA==1){
       CONTRA=0;
     }
+//*******************************************************************SONIDO DE PAUSA******************************************************************
     if(digitalRead(3)==LOW && digitalRead(4)==HIGH && digitalRead(5)==LOW && PAUSA==0){
       PAUSA++;
       tmrpcm.stopPlayback();
@@ -65,6 +56,7 @@ void loop() {
     if((digitalRead(3)!=LOW || digitalRead(4)!=HIGH || digitalRead(5)!=LOW) && PAUSA==1){
       PAUSA=0;
     }
+//*********************************************************************MUSICA DE GAMEOVER************************************************************
     if(digitalRead(3)==HIGH && digitalRead(4)==HIGH && digitalRead(5)==LOW && DEAD==0){
       DEAD++;
       tmrpcm.stopPlayback();
@@ -73,6 +65,7 @@ void loop() {
     if((digitalRead(3)!=HIGH || digitalRead(4)!=HIGH || digitalRead(5)!=LOW) && DEAD==1){
       DEAD=0;
     }
+//********************************************************************MUSICA DE VICTORIA**************************************************************
     if(digitalRead(3)==LOW && digitalRead(4)==LOW && digitalRead(5)==HIGH && CLEAR==0){
       CLEAR++;
       tmrpcm.stopPlayback();
@@ -82,11 +75,4 @@ void loop() {
       CLEAR=0;
     }
 }
-void receiveEvent(int howMany) {
-    while (4 < Wire.available()) { // loop through all but the last
-    char c = Wire.read(); // receive byte as a character
-    Serial.print(c);         // print the character
-  }
-  COM = Wire.read();    // receive byte as an integer
-  Serial.println(COM);         // print the integer
-}
+
